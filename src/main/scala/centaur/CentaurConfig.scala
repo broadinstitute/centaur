@@ -15,6 +15,7 @@ object CentaurConfig {
   lazy val maxWorkflowLength = conf.getDuration("centaur.maxWorkflowLength").toScala
   lazy val successfulTestCasePath = Paths.get(conf.getString("centaur.successfulTestCasePath"))
   lazy val failingTestCasePath = Paths.get(conf.getString("centaur.failingTestCasePath"))
+  lazy val jesOnlyTestCasePath = Paths.get(conf.getString("centaur.jesOnlyTestCasePath"))
 
   implicit class EnhancedJavaDuration(val javaDuration: java.time.Duration) extends AnyVal {
     def toScala: FiniteDuration = FiniteDuration(javaDuration.toNanos, TimeUnit.NANOSECONDS)
