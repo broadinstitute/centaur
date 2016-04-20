@@ -157,18 +157,14 @@ object Operations {
 
       def verifyWorkflowMetadata(metadata: Map[String, JsObject]) = {
         expectedMap match {
-          case Some(expected) => if (!expected.equals(metadata)) {
-            throw new Exception(s"Bad Metadata for Workflow ${request.name}")
-          }
+          case Some(expected) if !expected.equals(metadata) => throw new Exception(s"Bad Metadata for Workflow ${request.name}")
           case _ =>
         }
       }
 
       def verifyWorkflowOutputs(outputs: Map[String, JsValue]) = {
         expectedOutputMap match {
-          case Some(expected) => if (!expected.equals(outputs)) {
-            throw new Exception(s"Bad outputs for Workflow ${request.name}")
-          }
+          case Some(expected) if !expected.equals(outputs) => throw new Exception(s"Bad outputs for Workflow ${request.name}")
           case _ =>
         }
       }
