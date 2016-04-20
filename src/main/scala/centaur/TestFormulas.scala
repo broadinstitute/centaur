@@ -21,7 +21,7 @@ object TestFormulas {
   def runSuccessfulWorkflow(request: WorkflowRequest) = {
     for {
       s <- runWorkflowUntilTerminalStatus(request, Succeeded)
-      _ <- verifyMetadata(s, request)
+      _ <- verifyMetadataAndOutputs(s, request)
     } yield ()
   }
 

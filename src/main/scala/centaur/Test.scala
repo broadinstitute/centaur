@@ -117,19 +117,27 @@ object Operations {
     }
   }
 
+  /**
+    * This method uses a Metadata JSON returned by Cromwell as it's parameter,
+    * and creates a test map. Since there can be many attempts per call,
+    * this method takes the last call attempt, and filters the metadata
+    * key value pairs by those of interest.
+    */
   private def convertMetadataToTestMap(metadataJson: String): Map[String, JsObject] = {
     val calls = metadataJson.parseJson.asJsObject.fields.get("calls").get.asJsObject
-    val keys = Seq("runtimeAttributes", "preemptible", "executionStatus")
+    val listOfkeys = Seq("runtimeAttributes", "preemptible", "executionStatus")
 
     val lastCallAttempt = calls.fields map {
-      case (k, v:JsArray) =>
-        val lastAttempt = v.elements.last.asJsObject
-        val filteredCallAttributes = lastAttempt.fields collect {
-          case (k, v) if keys.contains(k) => k -> v
+      case (k1, allCallAttempts: JsArray) =>
+        val lastCallAttempt = allCallAttempts.elements.last.asJsObject
+        val filteredCallAttributes = lastCallAttempt.fields collect {
+          case (k2, callAttributes) if listOfkeys.contains(k2) => k2 -> callAttributes
         }
-        k -> JsObject(filteredCallAttributes)
-      case(k, v) => throw new Exception("Wrong Js parameter")
+        k1 -> JsObject(filteredCallAttributes)
+
+      case(k, v) => throw new Exception(s"Wrong Js parameter for $k, Call attempts are expected to be in a JsArray")
     }
+
     lastCallAttempt
   }
 
@@ -137,51 +145,51 @@ object Operations {
     // Need DefaultJsonProtocol export to use convertTo[Map[String,String]]
     import DefaultJsonProtocol._
     val outputs = metadataJson.parseJson.asJsObject.fields.get("outputs").get.asJsObject.toString
-    val outputMap = outputs.parseJson.convertTo[Map[String, JsValue]]
-    outputMap
+
+    outputs.parseJson.convertTo[Map[String, JsValue]]
   }
 
-  def verifyMetadata(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
+
+  def verifyMetadataAndOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
-      val expectedMap: Option[Map[String, JsObject]] = {
-        request.metadata map { metadataString: String => convertMetadataToTestMap(metadataString) }
-      }
-      val expectedOutputMap: Option[Map[String, JsValue]] = {
-        request.metadata map { metadataString: String => makeOutputMap(metadataString) }
-      }
+      val expectedMap: Option[Map[String, JsObject]] = request.metadata map { metadataString: String => convertMetadataToTestMap(metadataString) }
+      val expectedOutputMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeOutputMap(metadataString) }
 
       def verifyWorkflowMetadata(metadata: Map[String, JsObject]) = {
         expectedMap match {
           case Some(expected) => if (!expected.equals(metadata)) {
-            throw new Exception(s"Bad metadata. Expected ${expected.mkString} but got ${metadata.mkString}")
+            throw new Exception(s"Bad Metadata for Workflow ${request.name}")
           }
           case _ =>
         }
       }
+
       def verifyWorkflowOutputs(outputs: Map[String, JsValue]) = {
         expectedOutputMap match {
           case Some(expected) => if (!expected.equals(outputs)) {
-            throw new Exception(s"Bad outputs. Expected ${expected.mkString} but got ${outputs.mkString}")
+            throw new Exception(s"Bad outputs for Workflow ${request.name}")
           }
           case _ =>
         }
       }
 
       override def run: Try[Workflow] = {
-        val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
-        sendReceiveFutureCompletion(response map { allMetadata =>
+        def ensureExpectedFile(metadata: String): Unit = {
           val expectedFile = request.base.getParent.resolve(s"${request.name}.metadata")
           if (!Files.exists(expectedFile)) {
-            expectedFile.write(allMetadata)
+            expectedFile.write(metadata)
           }
-          val actualOutput = makeOutputMap(allMetadata)
-          val actualMetadata = convertMetadataToTestMap(allMetadata)
+        }
 
-          verifyWorkflowMetadata(actualMetadata)
-          verifyWorkflowOutputs(actualOutput)
+        val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
+        sendReceiveFutureCompletion(response map { allMetadata =>
+          ensureExpectedFile(allMetadata)
+          verifyWorkflowMetadata(convertMetadataToTestMap(allMetadata))
+          verifyWorkflowOutputs(makeOutputMap(allMetadata))
 
           workflow
         })
+
       }
     }
   }
