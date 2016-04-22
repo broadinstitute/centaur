@@ -12,6 +12,7 @@ import spray.http.{HttpResponse, HttpRequest, FormData}
 import spray.httpx.{PipelineException, UnsuccessfulResponseException}
 import spray.httpx.unmarshalling._
 import better.files._
+import centaur.json.JsonUtils._
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, Future}
@@ -150,6 +151,28 @@ object Operations {
   }
 
 
+  def compareJson(expectedMetadata: Option[Map[String, JsObject]], actualMetadata: Map[String, JsObject], request: WorkflowRequest) = {
+    import DefaultJsonProtocol._
+
+    val expectFlatten = expectedMetadata.head.values.mkString.parseJson.asJsObject.flatten()
+    val actualFlatten = actualMetadata.values.mkString.parseJson.asJsObject.flatten()
+
+    val expectMap = expectFlatten.convertTo[Map[String, JsValue]]
+    val actualMap = actualFlatten.convertTo[Map[String, JsValue]]
+
+    val diff = expectMap.keySet -- actualMap.keySet
+    println(s"For workflow ${request.name}: \nMissing expected call attributes: $diff")
+
+    expectFlatten.fields foreach { case (k, v) =>
+      if (actualMap.contains(k)) {
+        if (!v.toString.equals(actualMap.get(k).mkString)) {
+          println(s"Unexpected metadata for key: $k. Found: ${v.toString} Expected: ${actualMap.get(k).mkString}")
+        }
+      }
+    }
+  }
+
+
   def verifyMetadataAndOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
       val expectedMap: Option[Map[String, JsObject]] = request.metadata map { metadataString: String => convertMetadataToTestMap(metadataString) }
@@ -157,7 +180,9 @@ object Operations {
 
       def verifyWorkflowMetadata(metadata: Map[String, JsObject]) = {
         expectedMap match {
-          case Some(expected) if !expected.equals(metadata) => throw new Exception(s"Bad Metadata for Workflow ${request.name}")
+          case Some(expected) if !expected.equals(metadata) =>
+            compareJson(expectedMap, metadata, request)
+            throw new Exception(s"Bad Metadata for Workflow ${request.name}.")
           case _ =>
         }
       }
