@@ -13,7 +13,8 @@ There are two ways to invoke the intergration tests:
 
 # Adding custom tests
 
-You can add your own tests to the test suite by adding `-Dcentaur.optionalTestPath=DIR` on your sbt invocation. The value of `DIR` is expected to be a directory
+You can add your own tests to the test suite by adding `-Dcentaur.optionalTestPath=DIR` on your sbt invocation, 
+e.g. `sbt -Dcentaur.optionalTestPath=/some/path/to/tests test`. The value of `DIR` is expected to be a directory
 which contains one or more test cases. At the moment the only test cases supported are those where the workflow is submitted to your Cromwell server, it will
 verify the workflow successfully terminates and will optionally verify the outputs & metadata if supplied. The structure is required to be as follows:
 
