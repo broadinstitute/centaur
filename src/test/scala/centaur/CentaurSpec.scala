@@ -20,20 +20,12 @@ object FailureTest extends Tag("FailureTest")
   */
 object SuccessTest extends Tag("SuccessTest")
 
-<<<<<<< HEAD
 class CentaurSpec extends FlatSpec with Matchers with ParallelTestExecution {
   successfulTestCases foreach { case w =>
-=======
-
-class CentaurSpec extends FlatSpec with Matchers with ParallelTestExecution {
-  def testCases(basePath: Path): List[WorkflowRequest] = {
-    basePath.toFile.listFiles.toList collect { case x if x.isDirectory => x.toPath } map WorkflowRequest.apply
-  }
-
-  testCases(CentaurConfig.successfulTestCasePath) foreach { case w =>
->>>>>>> fd35ac1d72db7b611a090595f3843dc6d87b6e8c
-    it should s"successfully run ${w.name}" taggedAs SuccessTest in {
-      TestFormulas.runSuccessfulWorkflow(w).run.get
+    if (w.name == "hello") {
+      it should s"successfully run ${w.name}" taggedAs SuccessTest in {
+        TestFormulas.runSuccessfulWorkflow(w).run.get
+      }
     }
   }
 
