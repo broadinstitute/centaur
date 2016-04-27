@@ -22,10 +22,8 @@ object SuccessTest extends Tag("SuccessTest")
 
 class CentaurSpec extends FlatSpec with Matchers with ParallelTestExecution {
   successfulTestCases foreach { case w =>
-    if (w.name == "hello") {
-      it should s"successfully run ${w.name}" taggedAs SuccessTest in {
-        TestFormulas.runSuccessfulWorkflow(w).run.get
-      }
+    it should s"successfully run ${w.name}" taggedAs SuccessTest in {
+      TestFormulas.runSuccessfulWorkflow(w).run.get
     }
   }
 
