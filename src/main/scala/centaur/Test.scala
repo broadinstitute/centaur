@@ -118,18 +118,19 @@ object Operations {
     }
   }
 
+  private val AllowedKeys = Set("runtimeAttributes", "preemptible", "executionStatus")
+  
   /**
-    * This method uses a Metadata JSON returned by Cromwell as it's parameter,
+    * This method uses a Metadata JSON returned by Cromwell as its parameter,
     * and creates a test map. It flattens the nested JSON into a Map[String, JsValue]
     * and it filters the keys of interest.
     */
   private def makeMetadataMap(metadataJson: String): Map[String, JsValue] = {
 
-    val flattenedMetadataMap = metadataJson.parseJson.asJsObject.flatten().fields map { case(k, v) => k -> v }
-    val listOfKeys = Set("runtimeAttributes", "preemptible", "executionStatus")
-    val filteredMap = flattenedMetadataMap filter { case (k, v) => listOfKeys exists { x => k.contains(x) } }
+    metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => AllowedKeys exists { x => k.contains(x) } }
+    //val filteredMap = flattenedMetadataMap filter { case (k, v) => AllowedKeys exists { x => k.contains(x) } }
 
-    filteredMap
+    //filteredMap
   }
 
   private def makeOutputMap(metadataJson: String): Map[String, JsValue] = {
@@ -143,7 +144,7 @@ object Operations {
     * This method accepts the two maps being compared, Workflow Request, and type of Map
     * (metadata/output). It finds and returns the differences in the keys/values of the two maps.
     */
-  def assertMapDiff(expectedMetadata: Option[Map[String, JsValue]], actualMetadata: Map[String, JsValue], request: WorkflowRequest, testType: String) = {
+  def printMapDiff(expectedMetadata: Option[Map[String, JsValue]], actualMetadata: Map[String, JsValue], request: WorkflowRequest, testType: String) = {
     val expectedMap = expectedMetadata.get
 
     val diff = expectedMap.keySet -- actualMetadata.keySet
@@ -165,7 +166,7 @@ object Operations {
       def verifyWorkflowMetadata(metadata: Map[String, JsValue]) = {
           expectedMap match {
             case expected if !expected.equals(metadata) =>
-              assertMapDiff(expectedMap, metadata, request, "metadata")
+              printMapDiff(expectedMap, metadata, request, "metadata")
               throw new Exception(s"Metadata mismatch found for workflow ${request.name}.")
             case _ =>
           }
@@ -174,7 +175,7 @@ object Operations {
       def verifyWorkflowOutputs(outputs: Map[String, JsValue]) = {
         expectedOutputMap match {
           case expected if !expected.equals(outputs) =>
-            assertMapDiff(expectedOutputMap, outputs, request, "outputs")
+            printMapDiff(expectedOutputMap, outputs, request, "outputs")
             throw new Exception(s"Outputs mismatch found for workflow ${request.name}.")
           case _ =>
         }
