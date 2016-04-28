@@ -138,7 +138,7 @@ object Operations {
 
   /**
     * This method accepts the two maps being compared, Workflow Request, and type of Map
-    * (metadata/output). It finds and returns the differences in the keys/values of the two maps.
+    * (metadata/output). It finds and prints the differences in the keys/values of the two maps.
     */
   def printMapDiff(expectedMetadata: Option[Map[String, JsValue]], actualMetadata: Map[String, JsValue], request: WorkflowRequest, testType: String) = {
     val expectedMap = expectedMetadata.get
