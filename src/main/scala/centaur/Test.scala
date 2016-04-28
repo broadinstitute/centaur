@@ -126,11 +126,7 @@ object Operations {
     * and it filters the keys of interest.
     */
   private def makeMetadataMap(metadataJson: String): Map[String, JsValue] = {
-
     metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => AllowedKeys exists { x => k.contains(x) } }
-    //val filteredMap = flattenedMetadataMap filter { case (k, v) => AllowedKeys exists { x => k.contains(x) } }
-
-    //filteredMap
   }
 
   private def makeOutputMap(metadataJson: String): Map[String, JsValue] = {
@@ -150,7 +146,7 @@ object Operations {
     val diff = expectedMap.keySet -- actualMetadata.keySet
     println(s"For workflow ${request.name}: \nMissing expected $testType fields: $diff")
 
-    expectedMap foreach { case (k, v:JsValue) =>
+    expectedMap foreach { case (k, v: JsValue) =>
       if (actualMetadata.contains(k) && (!v.toString.equals(actualMetadata.get(k).mkString))) {
           println(s"Unexpected $testType for key: $k. Found: ${v.toString} Expected: ${actualMetadata.get(k).mkString}")
       }
@@ -164,20 +160,16 @@ object Operations {
 
 
       def verifyWorkflowMetadata(metadata: Map[String, JsValue]) = {
-          expectedMap match {
-            case expected if !expected.equals(metadata) =>
-              printMapDiff(expectedMap, metadata, request, "metadata")
-              throw new Exception(s"Metadata mismatch found for workflow ${request.name}.")
-            case _ =>
-          }
+        if (!expectedMap.equals(metadata)) {
+          printMapDiff(expectedMap, metadata, request, "metadata")
+          throw new Exception(s"Metadata mismatch found for workflow ${request.name}.")
+        }
       }
 
       def verifyWorkflowOutputs(outputs: Map[String, JsValue]) = {
-        expectedOutputMap match {
-          case expected if !expected.equals(outputs) =>
-            printMapDiff(expectedOutputMap, outputs, request, "outputs")
-            throw new Exception(s"Outputs mismatch found for workflow ${request.name}.")
-          case _ =>
+        if (!expectedOutputMap.equals(outputs)) {
+        printMapDiff(expectedOutputMap, outputs, request, "outputs")
+        throw new Exception(s"Output mismatch found for workflow ${request.name}.")
         }
       }
 
