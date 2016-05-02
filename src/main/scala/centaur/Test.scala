@@ -160,14 +160,14 @@ object Operations {
 
 
       def verifyWorkflowMetadata(metadata: Map[String, JsValue]) = {
-        if (!expectedMap.equals(metadata)) {
+        if (!expectedMap.equals(Some(metadata))) {
           printMapDiff(expectedMap, metadata, request, "metadata")
           throw new Exception(s"Metadata mismatch found for workflow ${request.name}.")
         }
       }
 
       def verifyWorkflowOutputs(outputs: Map[String, JsValue]) = {
-        if (!expectedOutputMap.equals(outputs)) {
+        if (!expectedOutputMap.equals(Some(outputs))) {
         printMapDiff(expectedOutputMap, outputs, request, "outputs")
         throw new Exception(s"Output mismatch found for workflow ${request.name}.")
         }
