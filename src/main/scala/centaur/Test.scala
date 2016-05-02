@@ -119,7 +119,7 @@ object Operations {
   }
 
   private val AllowedKeys = Set("runtimeAttributes", "preemptible", "executionStatus")
-  
+
   /**
     * This method uses a Metadata JSON returned by Cromwell as its parameter,
     * and creates a test map. It flattens the nested JSON into a Map[String, JsValue]
