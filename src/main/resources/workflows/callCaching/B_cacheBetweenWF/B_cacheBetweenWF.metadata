@@ -1,0 +1,33 @@
+{
+  "cache": {
+    "workflowName": "cacheBetweenWF",
+    "cacheBetweenWF.threeAgain": {
+      "cache": {
+        "allowResultReuse": true,
+        "cacheHitCall": "cacheWithinWF.three"
+      }
+    },
+    "cacheBetweenWF.twoAgain": {
+      "cache": {
+        "allowResultReuse": true,
+        "cacheHitCall": "cacheWithinWF.two"
+      }
+    },
+    "cacheBetweenWF.fourAgain": {
+      "cache": {
+        "allowResultReuse": true,
+        "cacheHitCall": "cacheWithinWF.two"
+      }
+    },
+    "cacheBetweenWF.oneAgain": {
+      "cache": {
+        "allowResultReuse": true,
+        "cacheHitCall": "cacheWithinWF.one"
+      }
+    }
+  },
+  "assertEqual": {
+    "cacheWithinWF.twoAgain.inputs": "cacheWithinWF.fourAgain.inputs",
+    "cacheWithinWF.twoAgain.outputs": "cacheWithinWF.fourAgain.outputs"
+  }
+}
