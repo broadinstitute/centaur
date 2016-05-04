@@ -1,5 +1,5 @@
 task one {
-  Int radius = 51
+  Int radius = 62
     command {
         echo ${radius*radius}
     }

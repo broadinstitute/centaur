@@ -119,14 +119,15 @@ object Operations {
   }
 
   private val AllowedKeys = Set("runtimeAttributes", "preemptible", "executionStatus")
+  private val CacheKeys = Set("cacheHitCall")
   
   /**
     * This method uses a Metadata JSON returned by Cromwell as its parameter,
     * and creates a test map. It flattens the nested JSON into a Map[String, JsValue]
     * and it filters the keys of interest.
     */
-  private def makeMetadataMap(metadataJson: String): Map[String, JsValue] = {
-    metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => AllowedKeys exists { x => k.contains(x) } }
+  private def makeFilteredMap(metadataJson: String, keySet: Set[String]): Map[String, JsValue] = {
+    metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => keySet exists { x => k.contains(x) } }
   }
 
   private def makeOutputMap(metadataJson: String): Map[String, JsValue] = {
@@ -156,7 +157,7 @@ object Operations {
 
   def verifyMetadataAndOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
-      val expectedMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeMetadataMap(metadataString) }
+      val expectedMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeFilteredMap(metadataString, AllowedKeys) }
       val expectedOutputMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeOutputMap(metadataString) }
 
 
@@ -185,7 +186,7 @@ object Operations {
         val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
         sendReceiveFutureCompletion(response map { allMetadata =>
           ensureExpectedFile(allMetadata)
-          verifyWorkflowMetadata(makeMetadataMap(allMetadata))
+          verifyWorkflowMetadata(makeFilteredMap(allMetadata, AllowedKeys))
           verifyWorkflowOutputs(makeOutputMap(allMetadata))
 
           workflow
@@ -227,13 +228,11 @@ object Operations {
     */
   def verifyCachingOff (workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
-      val expectedCacheMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => flattenToMap(filterByKey(cacheData, "cache")) }
-
       override def run: Try[Workflow] = {
         val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
         sendReceiveFutureCompletion(response  map { allMetadata =>
-          val cacheHit = Set("cacheHitCall")
-          val cacheHitMap = allMetadata.parseJson.asJsObject.fields filter { case (k, v) => cacheHit exists { x => k.contains(x) } }
+          val cacheHitMap = makeFilteredMap(allMetadata, CacheKeys)
+            //allMetadata.parseJson.asJsObject.fields filter { case (k, v) => cacheHit exists { x => k.contains(x) } }
           if(cacheHitMap.nonEmpty) throw new Exception(s"Found unexpected cache hits for ${request.name}: \n$cacheHitMap")
           workflow
         })
@@ -246,7 +245,7 @@ object Operations {
     * match up to confirm that caching is expected.
     */
 
-  def assertEqual (workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
+  def verifyInputsOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
       val equalMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => flattenToMap(filterByKey(cacheData, "assertEqual"))}
 

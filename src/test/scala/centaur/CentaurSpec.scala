@@ -20,41 +20,6 @@ object FailureTest extends Tag("FailureTest")
   */
 object SuccessTest extends Tag("SuccessTest")
 
-class CallCacheTest extends FlatSpec with Matchers with ParallelTestExecution {
-
-  def testCases(basePath: Path): List[WorkflowRequest] = {
-    basePath.toFile.listFiles.toList collect { case x if x.isDirectory => x.toPath } map WorkflowRequest.apply
-  }
-
-  testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "A_cacheWithinWF") {
-      w.name should s"successfully run ${w.name}" in {
-        CacheFormulas.runCachingWorkflow(w).run.get //check the caching expecations
-        Thread.sleep(1000)
-      }
-    }
-  }
-
-  testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "B_cacheBetweenWF") {
-      w.name should s"successfully run ${w.name}" in {
-        CacheFormulas.runCachingWorkflow(w).run.get //check the caching expecations
-        Thread.sleep(1000)
-      }
-    }
-  }
-
-  testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "readFromCache" || w.name == "writeToCache" ) {
-      w.name should s"successfully run ${w.name}" in {
-        CacheFormulas.runCachingTurnedOffWorkflow(w).run.get //check the caching expecations
-        Thread.sleep(1000)
-      }
-    }
-  }
-
-}
-
 //class CentaurSpec extends FlatSpec with Matchers with ParallelTestExecution {
 //  successfulTestCases foreach { case w =>
 //    it should s"successfully run ${w.name}" taggedAs SuccessTest in {

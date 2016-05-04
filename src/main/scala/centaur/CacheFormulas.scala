@@ -15,7 +15,7 @@ object CacheFormulas {
   def runCachingWorkflow(request: WorkflowRequest) = {
     for {
       s <- TestFormulas.runWorkflowUntilTerminalStatus(request, Succeeded)
-      r <- assertEqual(s, request)
+      r <- verifyInputsOutputs(s, request)
       _ <- verifyCaching(r, request)
     } yield ()
   }
