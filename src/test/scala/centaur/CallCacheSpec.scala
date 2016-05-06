@@ -11,30 +11,21 @@ class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
   }
 
   testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "readFromCache" || w.name == "writeToCache" ) {
-      w.name should s"successfully run ${w.name}" in {
-        CacheFormulas.runCachingTurnedOffWorkflow(w).run.get //check the caching expecations
-        Thread.sleep(1000)
-      }
-    }
-  }
-
-  testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "A_cacheWithinWF") {
+    if (w.name == "cacheWithinWF") {
       w.name should s"successfully run ${w.name}" in {
         TestFormulas.runCachingWorkflow(w).run.get
-        Thread.sleep(1000)
+        testCases(CentaurConfig.callCacheTestCasePath) foreach { case w2 =>
+        if (w2.name == "cacheBetweenWF")
+          w2.name can s"successfully run ${w.name}" in {
+            CacheFormulas.runSequentialCachingWorkflow(w, w2).run.get
+          }
+        }
+      }
+    }
+    if (w.name == "readFromCache" || w.name == "writeToCache" ) {
+      w.name should s"successfully run ${w.name}" in {
+        CacheFormulas.runCachingTurnedOffWorkflow(w).run.get
       }
     }
   }
-
-  testCases(CentaurConfig.callCacheTestCasePath) foreach { case w =>
-    if (w.name == "B_cacheBetweenWF") {
-      w.name can s"successfully run ${w.name}" in {
-        CacheFormulas.runCachingWorkflow(w).run.get
-        Thread.sleep(1000)
-      }
-    }
-  }
-
 }

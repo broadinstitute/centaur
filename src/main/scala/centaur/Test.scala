@@ -13,6 +13,7 @@ import spray.httpx.{PipelineException, UnsuccessfulResponseException}
 import spray.httpx.unmarshalling._
 import better.files._
 import centaur.json.JsonUtils._
+import centaur.Metadata._
 
 import scala.annotation.tailrec
 import scala.concurrent.{Await, Future}
@@ -130,13 +131,6 @@ object Operations {
     metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => keySet exists { x => k.contains(x) } }
   }
 
-  private def makeOutputMap(metadataJson: String): Map[String, JsValue] = {
-    // Need DefaultJsonProtocol export to use convertTo[Map[String,String]]
-    import DefaultJsonProtocol._
-    val outputs = metadataJson.parseJson.asJsObject.fields.get("outputs").get.asJsObject.toString
-    outputs.parseJson.convertTo[Map[String, JsValue]]
-  }
-
   /**
     * This method accepts the two maps being compared, Workflow Request, and type of Map
     * (metadata/output). It finds and prints the differences in the keys/values of the two maps.
@@ -157,8 +151,9 @@ object Operations {
 
   def verifyMetadataAndOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
+      // Need DefaultJsonProtocol export to use convertTo[Map[String,JsValue]]
       val expectedMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeFilteredMap(metadataString, AllowedKeys) }
-      val expectedOutputMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => makeOutputMap(metadataString) }
+      val expectedOutputMap: Option[Map[String, JsValue]] = request.metadata map { metadataString: String => convertJsObjectToMap(filterMetadataByKey(metadataString, "outputs"))}
 
 
       def verifyWorkflowMetadata(metadata: Map[String, JsValue]) = {
@@ -187,7 +182,7 @@ object Operations {
         sendReceiveFutureCompletion(response map { allMetadata =>
           ensureExpectedFile(allMetadata)
           verifyWorkflowMetadata(makeFilteredMap(allMetadata, AllowedKeys))
-          verifyWorkflowOutputs(makeOutputMap(allMetadata))
+          verifyWorkflowOutputs(convertJsObjectToMap(filterMetadataByKey(allMetadata, "outputs")))
 
           workflow
         })
@@ -202,7 +197,7 @@ object Operations {
     */
   def verifyCaching (workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
-      val expectedCacheMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => flattenToMap(filterByKey(cacheData, "cache")) }
+      val expectedCacheMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => filterMetadataByKey(cacheData, "cache").flattenToMap }
 
       def verifyWorkflowCaching(cache: Map[String, JsValue]) = {
         expectedCacheMap match {
@@ -216,7 +211,7 @@ object Operations {
       override def run: Try[Workflow] = {
         val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
         sendReceiveFutureCompletion(response  map { allMetadata =>
-          verifyWorkflowCaching(makeCachingMap(allMetadata, expectedCacheMap))
+          verifyWorkflowCaching(makeFilteredMap(allMetadata, expectedCacheMap.get.keySet))
           workflow
         })
       }
@@ -247,7 +242,7 @@ object Operations {
 
   def verifyInputsOutputs(workflow: Workflow, request: WorkflowRequest): Test[Workflow] = {
     new Test[Workflow] {
-      val equalMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => flattenToMap(filterByKey(cacheData, "assertEqual"))}
+      val equalMap: Option[Map[String, JsValue]] = request.metadata map { cacheData: String => filterMetadataByKey(cacheData, "assertEqual").flattenToMap}
 
       def verifyEqual(actualMap: Map[String, JsValue]) = {
         //FIXME: Another option .get
@@ -258,31 +253,12 @@ object Operations {
 
       override def run: Try[Workflow] = {
         val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
-        sendReceiveFutureCompletion(response  map { allMetadata => val actualMap = flattenToMap(allMetadata.parseJson.asJsObject)
+        sendReceiveFutureCompletion(response  map { allMetadata => val actualMap = allMetadata.parseJson.asJsObject.flattenToMap
           verifyEqual(actualMap)
           workflow
         })
       }
     }
-  }
-
-  private def flattenToMap(cacheCheck: JsObject): Map [String, JsValue] = {
-    cacheCheck.flatten().fields map { case(k, v: JsValue) => k -> v}
-  }
-
-  private def filterByKey(expectedMetadata: String, key: String): JsObject = {
-    expectedMetadata.parseJson.asJsObject.fields.get(key).get.asJsObject
-  }
-
-  /**
-    * Use the keys of from the .metadata file being passed in and only compare
-    * the values for those keys against the actual metadata results.
-    */
-  private def makeCachingMap(metadataJson: String, expectedMap: Option[Map[String, JsValue]]): Map[String, JsValue] = {
-    val actualFlatten = flattenToMap(metadataJson.parseJson.asJsObject) //flattened the entire actual Metadata file
-    val cacheKey = expectedMap.get.keySet //grabbed all keys of expected Map
-    val filteredMap = metadataJson.parseJson.asJsObject.flatten().fields filter { case (k, v) => cacheKey exists { x => k.contains(x) } } //retain all expected Keys
-    filteredMap
   }
 
   /**

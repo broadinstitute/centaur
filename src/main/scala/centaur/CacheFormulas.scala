@@ -20,6 +20,13 @@ object CacheFormulas {
     } yield ()
   }
 
+  def runSequentialCachingWorkflow(request: WorkflowRequest, secondRequest: WorkflowRequest) = {
+    for {
+      q <- TestFormulas.runWorkflowUntilTerminalStatus(request, Succeeded)
+      _ <- runCachingWorkflow(secondRequest)
+    } yield ()
+  }
+
   def runCachingTurnedOffWorkflow(request: WorkflowRequest) = {
     for {
       s <- TestFormulas.runWorkflowUntilTerminalStatus(request, Succeeded)
