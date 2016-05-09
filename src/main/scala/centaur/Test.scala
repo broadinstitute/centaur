@@ -218,7 +218,6 @@ object Operations {
         val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
         sendReceiveFutureCompletion(response  map { allMetadata =>
           val cacheHitMap = makeFilteredMap(allMetadata, CacheKeys)
-            //allMetadata.parseJson.asJsObject.fields filter { case (k, v) => cacheHit exists { x => k.contains(x) } }
           if (cacheHitMap.nonEmpty) throw new Exception(s"Found unexpected cache hits for ${request.name}: \n$cacheHitMap")
           workflow
         })

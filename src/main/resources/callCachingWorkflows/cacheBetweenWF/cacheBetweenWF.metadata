@@ -23,7 +23,7 @@
     }
   },
   "assertEqual": {
-    "cacheWithinWF.twoAgain.inputs": "cacheWithinWF.fourAgain.inputs",
-    "cacheWithinWF.twoAgain.outputs": "cacheWithinWF.fourAgain.outputs"
+    "cacheBetweenWF.twoAgain.inputs": "cacheBetweenWF.fourAgain.inputs",
+    "cacheBetweenWF.twoAgain.outputs": "cacheBetweenWF.fourAgain.outputs"
   }
 }

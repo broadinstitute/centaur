@@ -8,7 +8,7 @@
     }
   },
   "assertEqual": {
-    "cacheWithinWF.twoAgain.inputs": "cacheWithinWF.fourAgain.inputs",
-    "cacheWithinWF.twoAgain.outputs": "cacheWithinWF.fourAgain.outputs"
+    "cacheWithinWF.two.inputs": "cacheWithinWF.four.inputs",
+    "cacheWithinWF.two.outputs": "cacheWithinWF.four.outputs"
   }
 }
