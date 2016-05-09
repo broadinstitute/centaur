@@ -25,13 +25,6 @@ object TestFormulas {
     } yield ()
   }
 
-  def runCachingWorkflow(request: WorkflowRequest) = {
-    for {
-      s <- runWorkflowUntilTerminalStatus(request, Succeeded)
-      _ <- verifyCaching(s, request)
-    } yield ()
-  }
-
   def runFailingWorkflow(request: WorkflowRequest) = runWorkflowUntilTerminalStatus(request, Failed)
 
   def runSubmissionFailureWorkflow(request: WorkflowRequest) = submitWorkflowExpectingRejection(request)
