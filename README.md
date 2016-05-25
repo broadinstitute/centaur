@@ -29,7 +29,7 @@ files {
 
 metadata {
   fully.qualified.key.name1: VALUE1
-  fully.qualified.key.name2: VALU2
+  fully.qualified.key.name2: VALUE2
 }
 ```
 

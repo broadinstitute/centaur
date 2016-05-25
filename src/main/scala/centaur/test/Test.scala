@@ -113,7 +113,7 @@ object Operations {
         }
       }
 
-      override def run: Try[SubmittedWorkflow] = workflowLengthFutureCompletion(Future { doPerform() } )
+      override def run: Try[SubmittedWorkflow] = workflowLengthFutureCompletion(Future { doPerform() })
     }
   }
 

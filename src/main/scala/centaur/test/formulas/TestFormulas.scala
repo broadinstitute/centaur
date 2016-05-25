@@ -47,8 +47,8 @@ object TestFormulas {
   def runCachingTurnedOffWorkflow(workflow: Workflow) = {
     for {
       testWf <- runWorkflowUntilTerminalStatus(workflow, Succeeded)
-      m <- retrieveMetadata(testWf)
-      _ <- validateCachingWasOff(m, workflow.name)
+      metadata <- retrieveMetadata(testWf)
+      _ <- validateCachingWasOff(metadata, workflow.name)
     } yield ()
   }
 }
