@@ -110,18 +110,6 @@ object Operations {
     }
   }
 
-//  def sanitizedMetadata(workflow: Workflow, retrievedMetadata: WorkflowMetadata): Test[WorkflowMetadata] = {
-//    new Test[WorkflowMetadata] {
-//      override def run: Try[WorkflowMetadata] = {
-//                                        //NOTE: Please delete
-//        if (!retrievedMetadata.isEmpty) { println(s"The sanitized version is: ${retrievedMetadata.sanitizeAll}")
-//                                          Success(retrievedMetadata.sanitizeAll) }
-//        else Failure (throw new Exception (s"No metadata retrieved from Cromwell for ${workflow.name}"))
-//      }
-//    }
-//  }
-
-
   def validateMetadata(retrievedMetadata: WorkflowMetadata, expectedMetadata: WorkflowMetadata, workflow: SubmittedWorkflow): Test[Unit] = {
     new Test[Unit] {
       override def run: Try[Unit] = {

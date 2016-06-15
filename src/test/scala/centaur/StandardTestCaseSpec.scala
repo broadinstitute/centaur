@@ -41,22 +41,6 @@ class StandardTestCaseSpec extends FlatSpec with Matchers with ParallelTestExecu
     }
   }
 
-//  def findTest(name: String): StandardTestCase = {
-//    testCases(CentaurConfig.standardTestCasePath) foreach {
-//      case t if t.workflow.name == name => t
-//    }
-//  }
-//
-//  val sequentialTestCases = Map("direct_logs" -> "find_logs") foreach {
-//    case (k, v) => executeChainedTest(findTest(v), findTest(k), findTest(v).testFunction)
-//  }
-//
-//  def executeChainedTest(primaryCase: StandardTestCase, secondaryCase: StandardTestCase, f: Workflow => Test[_]): Unit = {
-//    def nameTests = it should s"${primaryCase.testFormat.testSpecString} ${primaryCase.workflow.name} \n" +
-//                             s"and ${secondaryCase.testFormat.testSpecString} ${secondaryCase.workflow.name}"
-//    def runTests = { ChainedTestCases(primaryCase, secondaryCase) }
-//  }
-
   private def runOrDont(itVerbString: ItVerbString, ignore: Boolean, runTest: => Any) = {
     if (ignore) {
       itVerbString ignore runTest

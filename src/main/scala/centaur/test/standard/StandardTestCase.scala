@@ -46,10 +46,3 @@ object StandardTestCase {
     Apply[ErrorOr].map3(workflow, format, options)((w, f, o) => StandardTestCase(w, f, o))
   }
 }
-
-case class ChainedTestCases(firstCase: StandardTestCase, secondCase: StandardTestCase) {
-  private def run = {
-    firstCase.testFunction
-    secondCase.testFunction
-  }
-}
