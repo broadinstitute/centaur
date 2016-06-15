@@ -11,6 +11,7 @@ import spray.client.pipelining._
 import spray.http.{FormData, HttpRequest, HttpResponse}
 import spray.httpx.PipelineException
 import spray.httpx.unmarshalling._
+import spray.json.{DefaultJsonProtocol, JsArray, JsString, JsValue}
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
@@ -109,11 +110,22 @@ object Operations {
     }
   }
 
-  def validateMetadata(retrievedMetadata: WorkflowMetadata, expectedMetadata: WorkflowMetadata): Test[Unit] = {
+//  def sanitizedMetadata(workflow: Workflow, retrievedMetadata: WorkflowMetadata): Test[WorkflowMetadata] = {
+//    new Test[WorkflowMetadata] {
+//      override def run: Try[WorkflowMetadata] = {
+//                                        //NOTE: Please delete
+//        if (!retrievedMetadata.isEmpty) { println(s"The sanitized version is: ${retrievedMetadata.sanitizeAll}")
+//                                          Success(retrievedMetadata.sanitizeAll) }
+//        else Failure (throw new Exception (s"No metadata retrieved from Cromwell for ${workflow.name}"))
+//      }
+//    }
+//  }
+
+
+  def validateMetadata(retrievedMetadata: WorkflowMetadata, expectedMetadata: WorkflowMetadata, workflow: SubmittedWorkflow): Test[Unit] = {
     new Test[Unit] {
       override def run: Try[Unit] = {
-        val diffs = expectedMetadata diff retrievedMetadata
-
+        val diffs = expectedMetadata diff(retrievedMetadata, workflow.id)
         if (diffs.isEmpty) Success(())
         else Failure(throw new Exception(s"Invalid metadata response:\n -${diffs.mkString("\n -")}\n"))
       }

@@ -1,0 +1,15 @@
+//Currently doesn't work in 0.20
+
+name: monitoring
+testFormat: workflowsuccess
+tags: ignore
+
+files {
+  wdl: monitoring/monitoring.wdl
+}
+
+metadata {
+  workflowName: monitoring
+  status: Succeeded
+  "calls.monitoring.simpleNeasy.monitoring": ""
+}

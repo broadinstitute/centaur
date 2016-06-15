@@ -31,7 +31,7 @@ object TestFormulas {
         for {
           w <- runSuccessfulWorkflow(r)
           m <- retrieveMetadata(w)
-          _ <- validateMetadata(m, r.metadata)
+          _ <- validateMetadata(m, r.metadata, w)
         } yield ()
     }
   }
@@ -44,10 +44,25 @@ object TestFormulas {
         for {
           w <- runFailingWorkflow(r)
           m <- retrieveMetadata(w)
-          _ <- validateMetadata(m, r.metadata)
+          _ <- validateMetadata(m, r.metadata, w)
         } yield ()
     }
   }
+
+//  def runSuccessfulWorkflowAndVerifySanitizedMetadata(workflow: Workflow): Test[Unit] = {
+//    workflow match {
+//      case _: WorkflowWithoutMetadata => throw new Exception("No Metdata? Go home.")
+//      case r: WorkflowWithMetadata =>
+//        for {
+//          w <- runSuccessfulWorkflow(r)
+//          m <- retrieveMetadata(w)
+//          s <- sanitizedMetadata(workflow, m)
+//          _ <- validateMetadata(s, r.metadata) //Note: use m for un-unsanitized object, and m for sanitized
+//        } yield ()
+//    }
+//  }
+
+
 
   def runSequentialCachingWorkflow(workflow: Workflow, secondWorkflow: Workflow) = {
     for {
