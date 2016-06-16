@@ -1,4 +1,4 @@
-#Currently doesn't work in 0.20, monitoring log is empty and
+#Currently doesn't work in 0.20, monitoring log is empty
 
 name: monitoring
 testFormat: workflowsuccess
