@@ -1,5 +1,5 @@
-//Currently failing since the workflow fails without completing task 'shouldSucceed'
-//and no information about tasks that weren't started.
+#Currently failing since the workflow fails without completing task 'shouldSucceed'
+#and no information about tasks that weren't started.
 
 name: no_new_calls
 testFormat: workflowfailure

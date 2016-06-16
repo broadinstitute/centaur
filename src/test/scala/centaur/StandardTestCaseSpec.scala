@@ -6,7 +6,7 @@ import cats.data.Validated.{Invalid, Valid}
 import cats.syntax.traverse._
 import cats.std.list._
 import centaur.test.Test
-import centaur.test.standard.{ChainedTestCases, StandardTestCase}
+import centaur.test.standard.{StandardTestCase}
 import centaur.test.workflow.Workflow
 
 import scala.language.postfixOps

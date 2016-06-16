@@ -9,6 +9,6 @@ files {
 metadata {
   workflowName: jes_wdl
   status: Succeeded
-  "calls.jes_wdl.checkDir.stdout": "gs://cloud-cromwell-dev/centaur-tests/jes_gcs_root/jes_wdl/UUID/call-checkDir/checkDir-stdout.log"
+  "calls.jes_wdl.checkDir.stdout": "gs://cloud-cromwell-dev/centaur-tests/jes_gcs_root/jes_wdl/<<UUID>>/call-checkDir/checkDir-stdout.log"
   "calls.jes_wdl.checkDir.outputs.root": "/cromwell_root"
 }

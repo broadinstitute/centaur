@@ -110,10 +110,10 @@ object Operations {
     }
   }
 
-  def validateMetadata(retrievedMetadata: WorkflowMetadata, expectedMetadata: WorkflowMetadata, workflow: SubmittedWorkflow): Test[Unit] = {
+  def validateMetadata(retrievedMetadata: WorkflowMetadata, expectedMetadata: WorkflowMetadata, workflowID: UUID): Test[Unit] = {
     new Test[Unit] {
       override def run: Try[Unit] = {
-        val diffs = expectedMetadata diff(retrievedMetadata, workflow.id)
+        val diffs = expectedMetadata diff(retrievedMetadata, workflowID)
         if (diffs.isEmpty) Success(())
         else Failure(throw new Exception(s"Invalid metadata response:\n -${diffs.mkString("\n -")}\n"))
       }

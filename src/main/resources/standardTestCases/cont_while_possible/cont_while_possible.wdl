@@ -1,6 +1,5 @@
 # When a task is dependent on a failing task, it should not start. When a task is not dependent
-# on a failing task, it should run and succeed. All of this is true when you override the
-# workflow-option "NoNewCalls" to "ContinueWhilePossible".
+# on a failing task, it should run and succeed.
 
 task boundToFail {
   command {

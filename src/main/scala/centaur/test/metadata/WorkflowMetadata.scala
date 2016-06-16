@@ -16,12 +16,12 @@ case class WorkflowMetadata(value: Map[String, JsValue]) extends AnyVal {
 
   def diff(other: WorkflowMetadata, workflowID: UUID): Iterable[String] = {
     val missingErrors = value.keySet.diff(other.value.keySet) map { k => s"Missing key: $k" }
-    val mismatchErrors = value.keySet.intersect(other.value.keySet) flatMap { k => diffValues(k, value(k), other.value(k), workflowID.toString) }
+    val mismatchErrors = value.keySet.intersect(other.value.keySet) flatMap { k => diffValues(k, value(k), other.value(k), workflowID) }
 
     mismatchErrors ++ missingErrors
   }
 
-  private def diffValues(key: String, expected: JsValue, other: JsValue, workflowID: String): Option[String] = {
+  private def diffValues(key: String, expected: JsValue, other: JsValue, workflowID: UUID): Option[String] = {
     /*
       FIXME/TODO:
 
@@ -31,18 +31,17 @@ case class WorkflowMetadata(value: Map[String, JsValue]) extends AnyVal {
       entirely likely that it won't survive long term.
      */
 
-   def sanitizeUUID(jsValue: JsValue): String = if (jsValue.toString.contains("UUID")) { jsValue.toString.replace("UUID", workflowID) }
-               else jsValue.toString
+    lazy val sanitisedExpectedUUID = expected.toString.replace("<<UUID>>", workflowID.toString)
 
     val isMatch = other match {
-      case o: JsString => sanitizeUUID(expected) == o.toString
+      case o: JsString => sanitisedExpectedUUID == o.toString
       case o: JsNumber => expected == JsString(o.value.toString)
       case o: JsBoolean => expected == JsString(o.value.toString)
       case _ => false
     }
 
     if (isMatch) None
-    else Option(s"Metadata mismatch for $key - expected: ${sanitizeUUID(expected)} but got: $other")
+    else Option(s"Metadata mismatch for $key - expected: $sanitisedExpectedUUID but got: $other")
   }
 
 }
