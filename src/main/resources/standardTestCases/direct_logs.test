@@ -1,4 +1,3 @@
-//Currently on 0.20 WorkflowFinalizingInProgress state fails the workflow
 name: direct_logs
 testFormat: workflowsuccess
 
