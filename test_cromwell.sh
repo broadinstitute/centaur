@@ -32,29 +32,29 @@ RUN_DIR=$(pwd)
 
 while getopts ":hb:r:c:p:j:" option; do
     case "$option" in
-	h) echo "$usage"
-	   exit
-	   ;;
-	b) CROMWELL_BRANCH=$OPTARG
-	   ;;
+        h) echo "$usage"
+            exit
+            ;;
+        b) CROMWELL_BRANCH=$OPTARG
+            ;;
         r) RUN_DIR=$OPTARG
-           mkdir -p "${RUN_DIR}"
-           ;;
+            mkdir -p "${RUN_DIR}"
+            ;;
         c) CONFIG_STRING="-Dconfig.file=$OPTARG"
-	   ;;
+            ;;
         p) PARALLELISM_FACTOR=$OPTARG
-	   ;;
-	j) CROMWELL_JAR=$OPTARG
-	   ;;
-	:) printf "Missing argument for -%s\n" "$OPTARG" >&2
-	   echo "$usage" >&2
-	   exit 1
-	   ;;
+            ;;
+        j) CROMWELL_JAR=$OPTARG
+            ;;
+        :) printf "Missing argument for -%s\n" "$OPTARG" >&2
+            echo "$usage" >&2
+            exit 1
+            ;;
         \?) printf "Illegal option: -%s\n" "$OPTARG" >&2
-           echo "$usage" >&2
-           exit 1
-	   ;;
-    esac
+            echo "$usage" >&2
+            exit 1
+            ;;
+        esac
 done
 shift $((OPTIND - 1))
 
