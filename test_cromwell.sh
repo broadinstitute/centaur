@@ -35,16 +35,16 @@ while getopts ":hb:r:c:p:j:" option; do
         h) echo "$usage"
             exit
             ;;
-        b) CROMWELL_BRANCH=$OPTARG
+        b) CROMWELL_BRANCH="${OPTARG}"
             ;;
         r) RUN_DIR=$OPTARG
             mkdir -p "${RUN_DIR}"
             ;;
-        c) CONFIG_STRING="-Dconfig.file=$OPTARG"
+        c) CONFIG_STRING=-Dconfig.file="${OPTARG}"
             ;;
-        p) PARALLELISM_FACTOR=$OPTARG
+        p) PARALLELISM_FACTOR="${OPTARG}"
             ;;
-        j) CROMWELL_JAR=$OPTARG
+        j) CROMWELL_JAR="${OPTARG}"
             ;;
         :) printf "Missing argument for -%s\n" "$OPTARG" >&2
             echo "$usage" >&2
@@ -68,7 +68,7 @@ mkdir -p ${LOG_DIR}
 
 if [[ -n ${CROMWELL_BRANCH} ]]; then
     if [[ -n ${CROMWELL_JAR} ]]; then
-        echo "Do not specify both a branch and a jar"
+        echo "Do not specify both a branch and a jar" >&2
         exit 1
     fi
 
@@ -89,8 +89,7 @@ if [[ -n ${CROMWELL_BRANCH} ]]; then
 fi
 
 echo "Starting Cromwell, jar is ${CROMWELL_JAR}"
-# Adding quotes on CONFIG_STRING caused bad things to happen. Sorry shellcheck
-java ${CONFIG_STRING} -jar "${CROMWELL_JAR}" server >> "${CROMWELL_LOG}" 2>&1 &
+java "${CONFIG_STRING}" -jar "${CROMWELL_JAR}" server >> "${CROMWELL_LOG}" 2>&1 &
 
 # Build and run centaur
 cd "${RUN_DIR}"
