@@ -99,9 +99,6 @@ object Operations {
     }
   }
 
-
-
-
   def validateMetadata(workflow: SubmittedWorkflow, expectedMetadata: WorkflowMetadata): Test[Unit] = {
     val consistencyTimeout = Future { Thread.sleep(CentaurConfig.metadataConsistencyTimeout.toMillis) }
 
