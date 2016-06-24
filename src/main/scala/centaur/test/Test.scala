@@ -107,17 +107,20 @@ object Operations {
 
     new Test[Unit] {
       def validateMetadataUntilTimeout(workflow: SubmittedWorkflow, expectedMetadata: WorkflowMetadata): Try[Unit] = {
-          val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v2/" + workflow.id + "/metadata"))
-          // Try to convert the response to a Metadata in our return Try.
-          // Currently any error msg will be opaque as it's unlikely to be an issue (can flesh out later)
-          val metadata = sendReceiveFutureCompletion(response map { r => WorkflowMetadata.fromMetadataJson(r).toOption.get })
-          metadata.map(expectedMetadata.diff(_, workflow.id)) match {
-            case Success(d) if d.isEmpty => Success()
-            case Success(d) if consistencyTimeout.isCompleted =>
+        def checkDiff(diffs: Iterable[String]): Try[Unit] = {
+          diffs match {
+            case d if d.isEmpty => Success()
+            case d if consistencyTimeout.isCompleted =>
               Failure(throw new Exception(s"Invalid metadata response:\n -${d.mkString("\n -")}\n"))
-            case Success(_) =>  validateMetadataUntilTimeout(workflow, expectedMetadata)
-            case Failure(e) => Failure(e)
+            case _ => validateMetadataUntilTimeout(workflow, expectedMetadata)
           }
+        }
+
+        val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
+        // Try to convert the response to a Metadata in our return Try.
+        // Currently any error msg will be opaque as it's unlikely to be an issue (can flesh out later)
+        val metadata = sendReceiveFutureCompletion(response map { r => WorkflowMetadata.fromMetadataJson(r).toOption.get })
+        metadata.map(expectedMetadata.diff(_, workflow.id)) flatMap checkDiff
       }
 
       override def run: Try[Unit] = {
@@ -140,10 +143,11 @@ object Operations {
     }
   }
 
+  // FIXME: Should be abstracted w/ validateMetadata - ATM still used by the unused caching tests
   def retrieveMetadata(workflow: SubmittedWorkflow): Test[WorkflowMetadata] = {
     new Test[WorkflowMetadata] {
       override def run: Try[WorkflowMetadata] = {
-        val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v2/" + workflow.id + "/metadata"))
+        val response = MetadataRequest(Get(CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
         // Try to convert the response to a Metadata in our return Try.
         // Currently any error msg will be opaque as it's unlikely to be an issue (can flesh out later)
         sendReceiveFutureCompletion(response map { r => WorkflowMetadata.fromMetadataJson(r).toOption.get })
