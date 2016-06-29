@@ -10,6 +10,6 @@ THREADS=${1:-3}
 
 echo "Running tests with ${THREADS}-way parallelism"
 
-sbt test:compile
+sbt -Dcentaur.optionalTestPath=/Users/rmunshi/centaur-private/jesTestCases test:compile
 CP=$(sbt "export test:dependency-classpath" --error)
 java -cp $CP org.scalatest.tools.Runner -R target/scala-2.11/test-classes -oD -PS${THREADS}
