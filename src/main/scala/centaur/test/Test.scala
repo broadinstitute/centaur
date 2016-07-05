@@ -99,18 +99,20 @@ object Operations {
 
   def validateMetadata(workflow: SubmittedWorkflow, expectedMetadata: WorkflowMetadata): Test[Unit] = {
 
+    @tailrec
     def eventually(startTime: OffsetDateTime, timeout: FiniteDuration)(f: => Try[Unit]): Try[Unit] = {
       import scala.concurrent.duration._
 
-      f recoverWith {
-        case _ if OffsetDateTime.now().isBefore(startTime.plusSeconds(timeout.toSeconds)) =>
+      f match {
+        case Failure(_) if OffsetDateTime.now().isBefore(startTime.plusSeconds(timeout.toSeconds)) =>
           Thread.sleep(1.second.toMillis)
           eventually(startTime, timeout)(f)
+        case t => t
       }
     }
 
     new Test[Unit] {
-      def validateMetadataUntilTimeout(workflow: SubmittedWorkflow, expectedMetadata: WorkflowMetadata): Try[Unit] = {
+      def validateMetadata(workflow: SubmittedWorkflow, expectedMetadata: WorkflowMetadata): Try[Unit] = {
         def checkDiff(diffs: Iterable[String]): Unit = {
           diffs match {
             case d if d.nonEmpty => throw new Exception(s"Invalid metadata response:\n -${d.mkString("\n -")}\n")
@@ -127,7 +129,7 @@ object Operations {
 
       override def run: Try[Unit] = {
         eventually(OffsetDateTime.now(), CentaurConfig.metadataConsistencyTimeout) {
-          validateMetadataUntilTimeout(workflow, expectedMetadata)
+          validateMetadata(workflow, expectedMetadata)
         }
       }
     }
