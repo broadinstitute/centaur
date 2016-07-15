@@ -25,6 +25,7 @@ Arguments:
     -r    Directory where script is run (defaults to current directory)
     -c    If supplied, the config file to pass to Cromwell
     -p    Number of simultaneous tests to run. Defaults to 3
+    -t    Refresh Token that can be passed into the appropriate options file
 "
 
 INITIAL_DIR=$(pwd)
@@ -45,6 +46,8 @@ while getopts ":hb:r:c:p:j:" option; do
         p) PARALLELISM_FACTOR="${OPTARG}"
             ;;
         j) CROMWELL_JAR="${OPTARG}"
+            ;;
+        t) REFRESH_TOKEN=-Dconfig.optionalToken="${OPTARG}"
             ;;
         :) printf "Missing argument for -%s\n" "$OPTARG" >&2
             echo "$usage" >&2
@@ -109,7 +112,7 @@ if [[ -n ${PARALLELISM_FACTOR} ]]; then
     TEST_COMMAND="./run_tests_parallel.sh ${PARALLELISM_FACTOR}"
 else
     echo "Running Centaur with sbt test"
-    TEST_COMMAND="sbt test"
+    TEST_COMMAND="sbt ${REFRESH_TOKEN} test"
 fi
 
 ${TEST_COMMAND}  >> ../${CENTAUR_LOG} 2>&1
