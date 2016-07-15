@@ -11,7 +11,6 @@ import spray.client.pipelining._
 import spray.http.{FormData, HttpRequest, HttpResponse}
 import spray.httpx.PipelineException
 import spray.httpx.unmarshalling._
-import spray.json.{DefaultJsonProtocol, JsArray, JsString, JsValue}
 
 import scala.annotation.tailrec
 import scala.concurrent.duration.FiniteDuration
@@ -21,7 +20,7 @@ import spray.httpx.SprayJsonSupport._
 import FailedWorkflowSubmissionJsonSupport._
 import CromwellStatusJsonSupport._
 import centaur.test.metadata.WorkflowMetadata
-import centaur.test.workflow.Workflow
+import centaur.test.workflow.{WorkflowOptions, Workflow}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -67,7 +66,8 @@ object Operations {
         // Collect only the parameters which exist:
         val params = List("wdlSource" -> Option(workflow.data.wdl),
           "workflowInputs" -> workflow.data.inputs,
-          "workflowOptions" -> workflow.data.options) collect { case (name, Some(value)) => (name, value) }
+          "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets
+        ) collect { case (name, Some(value)) => (name, value) }
         val formData = FormData(params)
         val response = Pipeline[CromwellStatus].apply(Post(CentaurConfig.cromwellUrl + "/api/workflows/v1", formData))
         sendReceiveFutureCompletion(response map { _.id } map UUID.fromString map { SubmittedWorkflow(_, CentaurConfig.cromwellUrl, workflow) })
