@@ -22,6 +22,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success, Try}
+import spray.httpx.SprayJsonSupport._
+import FailedWorkflowSubmissionJsonSupport._
+import CromwellStatusJsonSupport._
+import centaur.test.metadata.WorkflowMetadata
+import centaur.test.workflow.{WorkflowOptions, Workflow}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * A simplified riff on the final tagless pattern where the interpreter (monad & related bits) are fixed. Operation
@@ -65,7 +72,8 @@ object Operations {
         // Collect only the parameters which exist:
         val params = List("wdlSource" -> Option(workflow.data.wdl),
           "workflowInputs" -> workflow.data.inputs,
-          "workflowOptions" -> workflow.data.options) collect { case (name, Some(value)) => (name, value) }
+          "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets
+        ) collect { case (name, Some(value)) => (name, value) }
         val formData = FormData(params)
         val response = Pipeline[CromwellStatus].apply(Post(CentaurConfig.cromwellUrl + "/api/workflows/v1", formData))
         sendReceiveFutureCompletion(response map { _.id } map UUID.fromString map { SubmittedWorkflow(_, CentaurConfig.cromwellUrl, workflow) })

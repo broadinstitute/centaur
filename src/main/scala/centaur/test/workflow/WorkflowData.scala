@@ -3,12 +3,37 @@ package centaur.test.workflow
 import java.nio.file.Path
 
 import cats.data.Validated._
+import centaur.CentaurConfig
 import centaur.test._
 import com.typesafe.config.Config
 import configs.Result
 import configs.syntax._
+import spray.json._
+
 
 case class WorkflowData(wdl: String, inputs: Option[String], options: Option[String])
+
+case class WorkflowOptions(options: Option[String]) {
+  import DefaultJsonProtocol._
+
+  def insertSecrets(): Option[String] = {
+    val tokenKey = "refresh_token"
+
+    def addToken(optionsMap: Map[String, JsValue]): Map[String, JsValue] = {
+      CentaurConfig.optionalToken match {
+        case Some(token) if optionsMap.get(tokenKey).isDefined => optionsMap - tokenKey + (tokenKey -> JsString(token))
+        case None => optionsMap
+      }
+    }
+
+    options match {
+      case Some(someOptions) =>
+        val optionsMap = someOptions.parseJson.asJsObject.convertTo[Map[String, JsValue]]
+        Some(addToken(optionsMap).toJson.toString)
+      case None => options
+    }
+  }
+}
 
 object WorkflowData {
   def fromConfig(conf: Config, basePath: Path): ErrorOr[WorkflowData] = {
@@ -31,4 +56,4 @@ object WorkflowData {
       try source.mkString finally source.close()
     }
   }
- }
+}
