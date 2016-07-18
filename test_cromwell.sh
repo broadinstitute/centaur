@@ -15,7 +15,7 @@ EXIT_CODE=1
 PROGNAME="$(basename $0)"
 
 usage="
-$PROGNAME [-b branch] [-j jar path] [-r rundir] [-c config file] [-p parallelism factor]
+$PROGNAME [-b branch] [-j jar path] [-r rundir] [-c config file] [-p parallelism factor] [-t refresh token]
 
 Builds and runs specified branch of Cromwell and runs Centaur against it.
 
@@ -31,7 +31,7 @@ Arguments:
 INITIAL_DIR=$(pwd)
 RUN_DIR=$(pwd)
 
-while getopts ":hb:r:c:p:j:" option; do
+while getopts ":hb:r:c:p:j:t" option; do
     case "$option" in
         h) echo "$usage"
             exit
@@ -47,7 +47,7 @@ while getopts ":hb:r:c:p:j:" option; do
             ;;
         j) CROMWELL_JAR="${OPTARG}"
             ;;
-        t) REFRESH_TOKEN=-Dconfig.optionalToken="${OPTARG}"
+        t) REFRESH_TOKEN=-Dconfig.centaur.optionalToken="${OPTARG}"
             ;;
         :) printf "Missing argument for -%s\n" "$OPTARG" >&2
             echo "$usage" >&2
