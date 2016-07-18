@@ -31,7 +31,7 @@ Arguments:
 INITIAL_DIR=$(pwd)
 RUN_DIR=$(pwd)
 
-while getopts ":hb:r:c:p:j:t" option; do
+while getopts ":hb:r:c:p:j:t:" option; do
     case "$option" in
         h) echo "$usage"
             exit

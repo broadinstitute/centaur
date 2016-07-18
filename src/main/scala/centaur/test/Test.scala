@@ -72,7 +72,7 @@ object Operations {
         // Collect only the parameters which exist:
         val params = List("wdlSource" -> Option(workflow.data.wdl),
           "workflowInputs" -> workflow.data.inputs,
-          "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets
+          "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets.options
         ) collect { case (name, Some(value)) => (name, value) }
         val formData = FormData(params)
         val response = Pipeline[CromwellStatus].apply(Post(CentaurConfig.cromwellUrl + "/api/workflows/v1", formData))
