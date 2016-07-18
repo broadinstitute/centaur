@@ -1,4 +1,4 @@
-task makeGcsFile {
+task makeGcsFileInJes {
   command {
     echo "I am writing stuff" > out
   }
@@ -29,6 +29,6 @@ task readGcsFileFromLocal {
 }
 
 workflow local_gcs {
-  call makeGcsFile
-  call readGcsFileFromLocal { input: gcsFile = makeGcsFile.outputFile }
+  call makeGcsFileInJes
+  call readGcsFileFromLocal { input: gcsFile = makeGcsFileInJes.outputFile }
 }
