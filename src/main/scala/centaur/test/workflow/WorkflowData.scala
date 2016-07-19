@@ -29,8 +29,12 @@ case class WorkflowOptions(options: Option[String]) {
     options match {
       case Some(someOptions) =>
         val optionsMap = someOptions.parseJson.asJsObject.convertTo[Map[String, JsValue]]
-        WorkflowOptions(Some(addToken(optionsMap).toJson.toString))
-      case None => WorkflowOptions(options)
+        val gotIt = WorkflowOptions(Some(addToken(optionsMap).toJson.toString))
+        println(s"the new options are: $gotIt")
+        gotIt
+      case None =>
+        println(s"No options")
+        WorkflowOptions(options)
     }
   }
 }
