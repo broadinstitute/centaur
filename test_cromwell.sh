@@ -59,7 +59,7 @@ while getopts ":hb:r:c:p:j:t:" option; do
             ;;
         esac
 done
-shift $((OPTIND - 1))
+shift "$((OPTIND - 1))"
 
 LOG_DIR=logs
 ASSEMBLY_LOG=${LOG_DIR}/cromwell_assembly.log
