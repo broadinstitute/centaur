@@ -47,7 +47,7 @@ while getopts ":hb:r:c:p:j:t:" option; do
             ;;
         j) CROMWELL_JAR="${OPTARG}"
             ;;
-        t) REFRESH_TOKEN=-Dconfig.centaur.optionalToken="${OPTARG}"
+        t) REFRESH_TOKEN=-Dcentaur.optionalToken="${OPTARG}"
             ;;
         :) printf "Missing argument for -%s\n" "$OPTARG" >&2
             echo "$usage" >&2
@@ -112,6 +112,7 @@ if [[ -n ${PARALLELISM_FACTOR} ]]; then
     TEST_COMMAND="./run_tests_parallel.sh ${PARALLELISM_FACTOR}"
 else
     echo "Running Centaur with sbt test"
+    echo "About to run centaur as sbt ${REFRESH_TOKEN} test"
     TEST_COMMAND="sbt ${REFRESH_TOKEN} test"
 fi
 
