@@ -69,11 +69,13 @@ object Operations {
   def submitWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = {
     new Test[SubmittedWorkflow] {
       override def run: Try[SubmittedWorkflow] = {
+        println(s"Passed in refresh token is ${CentaurConfig.optionalToken}")
         // Collect only the parameters which exist:
         val params = List("wdlSource" -> Option(workflow.data.wdl),
           "workflowInputs" -> workflow.data.inputs,
           "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets.options
         ) collect { case (name, Some(value)) => (name, value) }
+        println(s"the options for ${workflow.name} are submitted as: ${WorkflowOptions(workflow.data.options).insertSecrets.options}")
         val formData = FormData(params)
         val response = Pipeline[CromwellStatus].apply(Post(CentaurConfig.cromwellUrl + "/api/workflows/v1", formData))
         sendReceiveFutureCompletion(response map { _.id } map UUID.fromString map { SubmittedWorkflow(_, CentaurConfig.cromwellUrl, workflow) })
