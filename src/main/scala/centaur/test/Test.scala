@@ -16,6 +16,7 @@ import spray.http.{FormData, HttpRequest, HttpResponse}
 import spray.httpx.PipelineException
 import spray.httpx.SprayJsonSupport._
 import spray.httpx.unmarshalling._
+import spray.json._
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,7 +27,8 @@ import spray.httpx.SprayJsonSupport._
 import FailedWorkflowSubmissionJsonSupport._
 import CromwellStatusJsonSupport._
 import centaur.test.metadata.WorkflowMetadata
-import centaur.test.workflow.{WorkflowOptions, Workflow}
+import centaur.test.workflow.Workflow
+import scala.Option
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -69,13 +71,11 @@ object Operations {
   def submitWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = {
     new Test[SubmittedWorkflow] {
       override def run: Try[SubmittedWorkflow] = {
-        println(s"Passed in refresh token is ${CentaurConfig.optionalToken}")
         // Collect only the parameters which exist:
         val params = List("wdlSource" -> Option(workflow.data.wdl),
           "workflowInputs" -> workflow.data.inputs,
-          "workflowOptions" -> WorkflowOptions(workflow.data.options).insertSecrets.options
+          "workflowOptions" -> insertSecrets(workflow.data.options)
         ) collect { case (name, Some(value)) => (name, value) }
-        println(s"the options for ${workflow.name} are submitted as: ${WorkflowOptions(workflow.data.options).insertSecrets.options}")
         val formData = FormData(params)
         val response = Pipeline[CromwellStatus].apply(Post(CentaurConfig.cromwellUrl + "/api/workflows/v1", formData))
         sendReceiveFutureCompletion(response map { _.id } map UUID.fromString map { SubmittedWorkflow(_, CentaurConfig.cromwellUrl, workflow) })
@@ -109,6 +109,25 @@ object Operations {
       }
 
       override def run: Try[SubmittedWorkflow] = workflowLengthFutureCompletion(Future { doPerform() })
+    }
+  }
+
+  private def insertSecrets(options: Option[String]): Option[String] = {
+    import DefaultJsonProtocol._
+    val tokenKey = "refresh_token"
+
+    def addToken(optionsMap: Map[String, JsValue]): Map[String, JsValue] = {
+      CentaurConfig.optionalToken match {
+        case Some(token) if optionsMap.get(tokenKey).isDefined => optionsMap + (tokenKey -> JsString(token))
+        case _ => optionsMap
+      }
+    }
+
+    options match {
+      case Some(someOptions) =>
+        val optionsMap = someOptions.toString.parseJson.asJsObject.convertTo[Map[String, JsValue]]
+        Option(addToken(optionsMap).toJson.toString)
+      case None => options
     }
   }
 

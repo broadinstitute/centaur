@@ -11,30 +11,8 @@ import configs.syntax._
 import spray.json._
 
 
+
 case class WorkflowData(wdl: String, inputs: Option[String], options: Option[String])
-
-case class WorkflowOptions(options: Option[String]) {
-  import DefaultJsonProtocol._
-
-  def insertSecrets(): WorkflowOptions = {
-    val tokenKey = "refresh_token"
-
-    def addToken(optionsMap: Map[String, JsValue]): Map[String, JsValue] = {
-      CentaurConfig.optionalToken match {
-        case Some(token) if optionsMap.get(tokenKey).isDefined => optionsMap - tokenKey + (tokenKey -> JsString(token))
-        case _ => optionsMap
-      }
-    }
-
-    options match {
-      case Some(someOptions) =>
-        val optionsMap = someOptions.parseJson.asJsObject.convertTo[Map[String, JsValue]]
-        WorkflowOptions(Some(addToken(optionsMap).toJson.toString))
-      case None =>
-        WorkflowOptions(options)
-    }
-  }
-}
 
 object WorkflowData {
   def fromConfig(conf: Config, basePath: Path): ErrorOr[WorkflowData] = {
