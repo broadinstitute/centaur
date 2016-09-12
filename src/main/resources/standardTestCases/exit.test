@@ -1,0 +1,13 @@
+name: exit
+testFormat: workflowsuccess
+backends: [Jes, Local]
+
+files {
+  wdl: exit/exit.wdl
+}
+
+metadata {
+  workflowName: exitWorkflow
+  status: Succeeded
+  "calls.exitWorkflow.exitTask.returnCode": 5
+}
