@@ -1,6 +1,5 @@
 name: exit
 testFormat: workflowsuccess
-backends: [Jes, Local]
 
 files {
   wdl: exit/exit.wdl

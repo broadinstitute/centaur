@@ -1,6 +1,5 @@
 name: subdirectory
 testFormat: workflowsuccess
-backends: [Jes, Local]
 
 files {
   wdl: subdirectory/subdirectory.wdl
