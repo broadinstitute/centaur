@@ -1,0 +1,11 @@
+name: accurateglobbing
+testFormat: workflowsuccess
+
+files {
+  wdl: accurateglobbing/accurateglobbing.wdl
+}
+
+metadata {
+    "outputs.accurateglobbing.checkGlobTask.out_txt1" = 2
+    "outputs.accurateglobbing.checkGlobTask.out_txt2" = 2
+}
