@@ -1,0 +1,14 @@
+name: refresh_token_failure
+testFormat: workflowfailure
+backends: [Jes-Refresh]
+
+files {
+  wdl: hello/hello.wdl
+  inputs: hello/hello.inputs
+  options: refresh_token_failure/refresh_token_failure.options
+}
+
+metadata {
+  workflowName: hello
+  status: Failed
+}
