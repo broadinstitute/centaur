@@ -1,7 +1,8 @@
 task hello {
-  File addressee
+  File iFile
+  String addressee = read_string(iFile)
   command {
-    echo "Hello ${read_string(addressee)}!"
+    echo "Hello ${addressee}!"
   }
   output {
     String salutation = read_string(stdout())

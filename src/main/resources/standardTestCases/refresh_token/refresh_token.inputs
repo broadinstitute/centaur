@@ -1,4 +1,4 @@
 {
-  "hello.hello.addressee": "gs://centaur-refresh-private/input.txt"
+  "hello.hello.iFile": "gs://centaur-refresh-private/inputs/taylorSwift.txt"
 }
 
