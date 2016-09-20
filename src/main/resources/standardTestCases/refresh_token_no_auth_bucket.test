@@ -11,4 +11,5 @@ files {
 metadata {
   workflowName: hello
   status: Failed
+  "failures.0.message":"Failed to upload authentication file"
 }
