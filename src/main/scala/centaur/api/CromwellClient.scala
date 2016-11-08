@@ -52,7 +52,7 @@ object CromwellClient {
 
   def metadata(workflow: SubmittedWorkflow): Try[WorkflowMetadata] = {
     val workflowMetadata = for {
-      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + workflow.id + "/metadata"))
+      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + "/" + workflow.id + "/metadata"))
       entity <- response.toEntity.to[String]
     } yield WorkflowMetadata.fromMetadataJson(entity).toOption.get
 
