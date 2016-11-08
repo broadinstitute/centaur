@@ -43,7 +43,7 @@ object CromwellClient {
 
   def status(workflow: SubmittedWorkflow): Try[WorkflowStatus] = {
     val workflowStatus = for {
-      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + workflow.id + "/status"))
+      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + + "/" + workflow.id + "/status"))
       entity <- response.toEntity.to[CromwellStatus]
     } yield WorkflowStatus(entity.status)
 
