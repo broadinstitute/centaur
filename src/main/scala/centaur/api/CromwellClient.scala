@@ -24,16 +24,18 @@ object CromwellClient {
   // Akka HTTP needs both the actor system and a materializer
   final implicit val system = ActorSystem("centaur-acting-like-a-system")
   final implicit val materializer: ActorMaterializer = ActorMaterializer(ActorMaterializerSettings(system))
+  final val apiPath = "/api/workflows/v1"
 
   def submit(workflow: Workflow): Try[SubmittedWorkflow] = {
-    val params = Map("wdlSource" -> Option(workflow.data.wdl),
+    val params = Map(
+      "wdlSource" -> Option(workflow.data.wdl),
       "workflowInputs" -> workflow.data.inputs,
       "workflowOptions" -> insertSecrets(workflow.data.options)
     ) collect { case (name, Some(value)) => (name, value) }
     val formData = FormData(params).toEntity
 
     val submittedWorkflow = for {
-      response <- Http().singleRequest(HttpRequest(HttpMethods.POST, CentaurConfig.cromwellUrl + "/api/workflows/v1", entity=formData))
+      response <- Http().singleRequest(HttpRequest(HttpMethods.POST, CentaurConfig.cromwellUrl + apiPath, entity = formData))
       entity <- response.toEntity.to[CromwellStatus]
     } yield SubmittedWorkflow(UUID.fromString(entity.id), CentaurConfig.cromwellUrl, workflow)
     sendReceiveFutureCompletion(submittedWorkflow)
@@ -41,7 +43,7 @@ object CromwellClient {
 
   def status(workflow: SubmittedWorkflow): Try[WorkflowStatus] = {
     val workflowStatus = for {
-      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/status"))
+      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + workflow.id + "/status"))
       entity <- response.toEntity.to[CromwellStatus]
     } yield WorkflowStatus(entity.status)
 
@@ -50,7 +52,7 @@ object CromwellClient {
 
   def metadata(workflow: SubmittedWorkflow): Try[WorkflowMetadata] = {
     val workflowMetadata = for {
-      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + "/api/workflows/v1/" + workflow.id + "/metadata"))
+      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + workflow.id + "/metadata"))
       entity <- response.toEntity.to[String]
     } yield WorkflowMetadata.fromMetadataJson(entity).toOption.get
 
@@ -59,7 +61,7 @@ object CromwellClient {
 
   lazy val backends: Try[CromwellBackends] = {
     val backends = for {
-      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + "/api/workflows/v1/backends"))
+      response <- Http().singleRequest(HttpRequest(uri = CentaurConfig.cromwellUrl + apiPath + "/backends"))
       entity <- response.toEntity.to[CromwellBackends]
     } yield entity
 
@@ -84,12 +86,7 @@ object CromwellClient {
       }
     }
 
-    options match {
-      case Some(someOptions) =>
-        val optionsMap = someOptions.toString.parseJson.asJsObject.convertTo[Map[String, JsValue]]
-        Option(addToken(optionsMap).toJson.toString)
-      case None => options
-    }
+    options map (o => addToken(o.toString.parseJson.asJsObject.convertTo[Map[String, JsValue]]).toJson.toString)
   }
 
   final implicit class EnhancedHttpResponse(val response: HttpResponse) extends AnyVal {
