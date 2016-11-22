@@ -12,25 +12,16 @@ case class WorkflowData(wdl: String, inputs: Option[String], options: Option[Str
 
 object WorkflowData {
   def fromConfig(conf: Config, basePath: Path): ErrorOr[WorkflowData] = {
-    lazy val imports = conf.get[List[Path]]("imports") match {
-      case Result.Success(importPaths) => importPaths map basePath.resolve
-      case Result.Failure(_) => List.empty
-    }
-    
     conf.get[Path]("wdl") match {
-      case Result.Success(wdl) => Valid(WorkflowData(basePath.resolve(wdl), conf, basePath, imports))
+      case Result.Success(wdl) => Valid(WorkflowData(basePath.resolve(wdl), conf, basePath))
       case Result.Failure(_) => invalidNel("No wdl path provided")
     }
   }
 
-  def apply(wdl: Path, conf: Config, basePath: Path, imports: List[Path]): WorkflowData = {
+  def apply(wdl: Path, conf: Config, basePath: Path): WorkflowData = {
     def getOptionalPath(name: String) = conf.get[Option[Path]](name) valueOrElse None map basePath.resolve
     // TODO: The slurps can throw - not a high priority but see #36
-    val wdlContent = wdl.slurp
-    val postProcessedWdlContent = imports.foldLeft(wdlContent)((acc, importPath) => {
-      acc.replaceFirst("<<IMPORT>>", importPath.toAbsolutePath.toString)
-    })
-    WorkflowData(postProcessedWdlContent, getOptionalPath("inputs") map { _.slurp }, getOptionalPath("options") map { _.slurp })
+    WorkflowData(wdl.slurp, getOptionalPath("inputs") map { _.slurp }, getOptionalPath("options") map { _.slurp })
   }
 
   implicit class EnhancedPath(val path: Path) extends AnyVal {
