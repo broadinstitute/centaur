@@ -1,4 +1,4 @@
-import "<<IMPORT>>" as sub
+import "refresh_token_sub_workflow_import.wdl" as sub
 
 task hello {
   File iFile
