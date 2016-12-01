@@ -21,6 +21,6 @@ workflow recursive_imports {
 
   output {
     wf_hello.*
-    forkjoin.join.*
+    join.*
   }
 }
