@@ -16,7 +16,7 @@ task hello {
 
 workflow refresh_token_sub_workflow {
   call hello
-  call sub.wf_hello
+  call sub.wf_hello { input: wfIFile = "gs://centaur-refresh-private/inputs/taylorSwift.txt" }
   output {
      hello.salutation
      wf_hello.salutation
