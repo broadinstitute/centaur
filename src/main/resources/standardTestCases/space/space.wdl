@@ -1,24 +1,29 @@
 task hello {
-    File f
-    String s = read_string(f)
     command {
-        echo "Hello ${s}" > 'out with space.txt'
+        echo "Hello world" > 'out with space.txt'
+        echo "Hello world" > 'out%20with%20.uxu'
     }
     runtime {
         docker: "ubuntu:latest"
     }
     output {
-        File single = "out with space.txt"
-        Array[File] globbed = glob("*.txt")
+        File singleSpace = "out with space.txt"
+        File singlePercent = "out%20with%20.uxu"
+        Array[File] globbedSpace = glob("*.txt")
+        Array[File] globbedPercent = glob("*.uxu")
     }
 }
 
 task goodbye {
     File f
+    File f2
     Array[File] files
+    Array[File] files2
     command {
         echo "Goodbye ${f}"
+        echo "Goodbye ${f2}"
         echo "Goodbye ${sep = " " files}"
+        echo "Goodbye ${sep = " " files2}"
     }
     runtime {
             docker: "ubuntu:latest"
@@ -29,20 +34,20 @@ task goodbye {
 }
 
 workflow space {
-    File file_input = "gs://cloud-cromwell-dev/travis-centaur/file name with spaces.txt"
-    File file_input2 = "gs://cloud-cromwell-dev/travis-centaur/file%20name%20with%20.txt"
-    String file_input_content = read_string(file_input)
-    String file_input_content2 = read_string(file_input2)
+    call hello
+    String s1 = read_string(hello.singleSpace)
+    String s2 = read_string(hello.singlePercent)
     
-    call hello { input: f = file_input }
-    call hello as hello2 { input: f = file_input2 }
-    call goodbye { input: f = hello2.single, files = hello2.globbed }
-    call goodbye as goodbye2 { input: f = hello2.single, files = hello2.globbed }
+    call goodbye { input: 
+     f = hello.singleSpace,
+     f2 = hello.singlePercent, 
+     files = hello.globbedSpace,
+     files2 = hello.globbedPercent 
+    }
     
     output {
-        String o1 = file_input_content
-        String o2 = file_input_content2
+        String o1 = s1
+        String o2 = s2
         String o3 = goodbye.out
-        String o4 = goodbye2.out
     }
 }
