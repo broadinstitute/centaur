@@ -1,0 +1,27 @@
+name: check_jes_vm_attributes
+testFormat: workflowsuccess
+backends: [Jes]
+
+files {
+  wdl: check_jes_vm_attributes/check_jes_vm_attributes.wdl
+}
+
+metadata {
+  status: Succeeded
+
+  "outputs.w.preemptible_unspecified": "FALSE"
+  "outputs.w.preemptible_specified_one": "TRUE"
+  "outputs.w.preemptible_specified_zero": "FALSE"
+
+  "outputs.w.cpu_specified_one": 1
+  "outputs.w.cpu_specified_two": 2
+
+  "outputs.w.memory_specified_two_gb": 2
+  "outputs.w.memory_specified_four_gb": 4
+
+  "outputs.w.zone_unspecified": "us-central1-b"
+  "outputs.w.zone_specified": "us-east1-c"
+
+  "outputs.w.no_address_specified_false": "false"
+  "outputs.w.no_address_unspecified": "false"
+}
