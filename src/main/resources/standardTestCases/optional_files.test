@@ -1,0 +1,12 @@
+name: optional_files
+testFormat: workflowsuccess
+
+files {
+  wdl: optional_files/optional_files.wdl
+}
+
+metadata {
+  workflowName: optional_files
+  status: Succeeded
+  "outputs.optional_files.result": "blah"
+}
