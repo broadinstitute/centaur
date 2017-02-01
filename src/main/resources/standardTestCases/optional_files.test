@@ -1,5 +1,6 @@
 name: optional_files
 testFormat: workflowsuccess
+ignore: true
 
 files {
   wdl: optional_files/optional_files.wdl
