@@ -1,11 +1,12 @@
 task echo {
   command {
     echo "Peter Piper picked a peck of pickled peppers"
+    sleep 2
   }
   output {
     File out = stdout()
   }
-  runtime {docker: "ubuntu@sha256:71cd81252a3563a03ad8daee81047b62ab5d892ebbfbf71cf53415f29c130950"}
+  runtime {docker: "ubuntu:precise-20161209"}
 }
 
 task find {
@@ -13,14 +14,15 @@ task find {
   File in_file
   command {
     grep '${match}' ${in_file} | wc -l
+    sleep 2
   }
   output {
     Int count = read_int(stdout())
   }
-  runtime {docker: "ubuntu@sha256:71cd81252a3563a03ad8daee81047b62ab5d892ebbfbf71cf53415f29c130950"}
+  runtime {docker: "ubuntu:precise-20161209"}
 }
 
-workflow readFromCache {
+workflow floatingTags {
   call echo
   call find { input: in_file = echo.out }
   call echo as echoAgain
