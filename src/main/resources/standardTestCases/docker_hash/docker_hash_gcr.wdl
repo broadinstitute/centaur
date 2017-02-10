@@ -7,6 +7,6 @@ task gcr {
     }
 }
 
-workflow docker_hash {
+workflow docker_hash_gcr {
     call gcr
 }

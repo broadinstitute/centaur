@@ -3,10 +3,10 @@ task dockerhub {
         echo "hello"
     }
     runtime {
-        docker: "ubuntu:precise-20161209"
+        docker: "broadinstitute/cloud-cromwell:dev"
     }
 }
 
-workflow docker_hash_dockerhub {
+workflow docker_hash_dockerhub_private {
     call dockerhub
 }
