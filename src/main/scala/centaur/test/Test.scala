@@ -94,7 +94,7 @@ object Operations {
 
       f match {
         case Failure(_) if OffsetDateTime.now().isBefore(startTime.plusSeconds(timeout.toSeconds)) =>
-          blocking { Thread.sleep(1.second.toMillis) }
+          blocking { Thread.sleep(10.seconds.toMillis) }
           eventually(startTime, timeout)(f)
         case t => t
       }
