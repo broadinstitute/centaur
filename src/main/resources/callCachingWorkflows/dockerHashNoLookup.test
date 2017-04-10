@@ -1,4 +1,5 @@
 name: dockerHashNoLookup
+backends: [LocalNoDocker]
 
 files {
   wdl: dockerHashNoLookup/dockerHashNoLookup.wdl
