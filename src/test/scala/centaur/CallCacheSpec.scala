@@ -14,6 +14,7 @@ object CallCacheSpec {
   val WriteToCacheTest = CallCachingWorkflowDir.resolve("writeToCache.test")
   val CacheWithinWf = CallCachingWorkflowDir.resolve("cacheWithinWF.test")
   val CacheBetweenWf = CallCachingWorkflowDir.resolve("cacheBetweenWf.test")
+  val DockerHashNoLookup = CallCachingWorkflowDir.resolve("dockerHashNoLookup.test")
 }
 
 class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
@@ -23,6 +24,13 @@ class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
     Workflow.fromPath(ReadFromCacheTest) match {
       case Valid(w) => TestFormulas.runCachingTurnedOffWorkflow(w).run.get
       case Invalid(e) => fail(s"Could not read readFromCache test:\n -${e.toList.mkString("\n-")}")
+    }
+  }
+
+  "dockerHashNoLookup" should "not lookup docker tag if backend doesn't support docker" in {
+    Workflow.fromPath(DockerHashNoLookup) match {
+      case Valid(w) => TestFormulas.runSequentialCachingWorkflows(w, w).run.get
+      case Invalid(e) => fail(s"Could not read cacheWithinWf test:\n - ${e.toList.mkString("\n- ")}")
     }
   }
 

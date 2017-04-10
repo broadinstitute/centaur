@@ -1,0 +1,12 @@
+name: dockerHashNoLookup
+
+files {
+  wdl: dockerHashNoLookup/dockerHashNoLookup.wdl
+  options: dockerHashNoLookup/dockerHashNoLookup.options
+}
+
+metadata {
+  workflowName: docker_hash_no_lookup
+  status: Succeeded
+  "calls.docker_hash_no_lookup.dockerhub.callCaching.result": "Cache Hit: <<CACHE_HIT_UUID>>:docker_hash_no_lookup.dockerhub:-1"
+}
