@@ -3,6 +3,7 @@ package centaur
 import java.nio.file.Paths
 
 import cats.data.Validated.{Invalid, Valid}
+import centaur.api.CromwellBackendsCompanion
 import centaur.test.formulas.TestFormulas
 import centaur.test.workflow.Workflow
 import org.scalatest.{FlatSpec, Matchers, ParallelTestExecution}
@@ -29,7 +30,12 @@ class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
 
   "dockerHashNoLookup" should "not lookup docker tag if backend doesn't support docker" in {
     Workflow.fromPath(DockerHashNoLookup) match {
-      case Valid(w) => TestFormulas.runSequentialCachingWorkflows(w, w).run.get
+      case Valid(w) =>
+        if (w.backends forall CromwellBackendsCompanion.supportedBackends.contains){
+          TestFormulas.runSequentialCachingWorkflows(w, w).run.get
+        } else {
+          succeed
+        }
       case Invalid(e) => fail(s"Could not read cacheWithinWf test:\n - ${e.toList.mkString("\n- ")}")
     }
   }
