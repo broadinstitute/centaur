@@ -21,6 +21,16 @@ object CallCacheSpec {
 class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
   import CallCacheSpec._
 
+  val dockerHashNoLookupVerb = "dockerHashNoLookup" should "not lookup docker tag if backend doesn't support docker"
+  var runDockerHashNoLookupWorkflow: Option[Workflow] = None
+  val runDockerHashNoLookup: Any => Unit = Workflow.fromPath(DockerHashNoLookup) match {
+    case Valid(w) if w.backends forall CromwellBackendsCompanion.supportedBackends.contains =>
+      runDockerHashNoLookupWorkflow = Option(w)
+      dockerHashNoLookupVerb in _
+    case _ =>
+      dockerHashNoLookupVerb ignore _
+  }
+
   "readFromCacheOff" should "not use call cache reading" in {
     Workflow.fromPath(ReadFromCacheTest) match {
       case Valid(w) => TestFormulas.runCachingTurnedOffWorkflow(w).run.get
@@ -28,17 +38,11 @@ class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
     }
   }
 
-  "dockerHashNoLookup" should "not lookup docker tag if backend doesn't support docker" in {
-    Workflow.fromPath(DockerHashNoLookup) match {
-      case Valid(w) =>
-        if (w.backends forall CromwellBackendsCompanion.supportedBackends.contains){
-          TestFormulas.runSequentialCachingWorkflows(w, w).run.get
-        } else {
-          succeed
-        }
-      case Invalid(e) => fail(s"Could not read cacheWithinWf test:\n - ${e.toList.mkString("\n- ")}")
-    }
-  }
+//  runDockerHashNoLookup {
+//    runDockerHashNoLookupWorkflow foreach { w =>
+//      TestFormulas.runSequentialCachingWorkflows(w, w).run.get
+//    }
+//  }
 
   "cacheBetweenWf" should "successfully call cache between two workflows" in {
     Workflow.fromPath(CacheBetweenWf) match {

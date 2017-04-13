@@ -10,4 +10,5 @@ metadata {
   workflowName: docker_hash_no_lookup
   status: Succeeded
   "calls.docker_hash_no_lookup.dockerhub.callCaching.result": "Cache Hit: <<CACHE_HIT_UUID>>:docker_hash_no_lookup.dockerhub:-1"
+  "calls.docker_hash_no_lookup.dockerhub.runtimeAttributes.docker": "ubuntu:precise-20161209"
 }
