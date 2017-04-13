@@ -8,6 +8,6 @@ task dockerhub {
     }
 }
 
-workflow docker_hash_no_lookup {
+workflow backend_with_no_docker {
     call dockerhub
 }

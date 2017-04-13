@@ -3,7 +3,6 @@ package centaur
 import java.nio.file.Paths
 
 import cats.data.Validated.{Invalid, Valid}
-import centaur.api.CromwellBackendsCompanion
 import centaur.test.formulas.TestFormulas
 import centaur.test.workflow.Workflow
 import org.scalatest.{FlatSpec, Matchers, ParallelTestExecution}
@@ -15,21 +14,10 @@ object CallCacheSpec {
   val WriteToCacheTest = CallCachingWorkflowDir.resolve("writeToCache.test")
   val CacheWithinWf = CallCachingWorkflowDir.resolve("cacheWithinWF.test")
   val CacheBetweenWf = CallCachingWorkflowDir.resolve("cacheBetweenWf.test")
-  val DockerHashNoLookup = CallCachingWorkflowDir.resolve("dockerHashNoLookup.test")
 }
 
 class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
   import CallCacheSpec._
-
-  val dockerHashNoLookupVerb = "dockerHashNoLookup" should "not lookup docker tag if backend doesn't support docker"
-  var runDockerHashNoLookupWorkflow: Option[Workflow] = None
-  val runDockerHashNoLookup: Any => Unit = Workflow.fromPath(DockerHashNoLookup) match {
-    case Valid(w) if w.backends forall CromwellBackendsCompanion.supportedBackends.contains =>
-      runDockerHashNoLookupWorkflow = Option(w)
-      dockerHashNoLookupVerb in _
-    case _ =>
-      dockerHashNoLookupVerb ignore _
-  }
 
   "readFromCacheOff" should "not use call cache reading" in {
     Workflow.fromPath(ReadFromCacheTest) match {
@@ -37,12 +25,6 @@ class CallCacheSpec extends FlatSpec with Matchers with ParallelTestExecution {
       case Invalid(e) => fail(s"Could not read readFromCache test:\n -${e.toList.mkString("\n-")}")
     }
   }
-
-//  runDockerHashNoLookup {
-//    runDockerHashNoLookupWorkflow foreach { w =>
-//      TestFormulas.runSequentialCachingWorkflows(w, w).run.get
-//    }
-//  }
 
   "cacheBetweenWf" should "successfully call cache between two workflows" in {
     Workflow.fromPath(CacheBetweenWf) match {
