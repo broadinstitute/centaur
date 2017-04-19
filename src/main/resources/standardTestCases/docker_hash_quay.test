@@ -1,0 +1,10 @@
+name: docker_hash_quay
+testFormat: workflowsuccess
+
+files {
+  wdl: docker_hash/docker_hash_quay.wdl
+}
+
+metadata {
+  "calls.docker_hash_quay.quay.runtimeAttributes.docker": "quay.io/tjeandet/tj-ubuntu@sha256:f09136f8e48558bb6ac2f7749799546b8767a211dcc7a5a46932907f58f42343"
+}
