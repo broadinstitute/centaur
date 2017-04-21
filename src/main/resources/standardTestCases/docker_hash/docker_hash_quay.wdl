@@ -3,7 +3,7 @@ task quay {
         echo "hello"
     }
     runtime {
-        docker: "quay.io/tjeandet/tj-ubuntu:centaur"
+        docker: "quay.io/aptible/ubuntu:12.04"
     }
 }
 
