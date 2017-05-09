@@ -45,8 +45,12 @@ workflow call_cache_capoeira {
     # Like read_files but with 2 Array[File] instead of File
     call read_array_files { input: ready = sleep.done, a = [make_files.bananeira], b = [make_files.balanca] }
     
+    # Give the last call a chance to be writen to the call caching DB
+    call sleep as sleep_some_more { input: duration = 5, ready = read_array_files.done }
+    
     # Same as read_array_files except a is empty and b contains both, in the same order. Don't call cache!
-    call read_array_files as read_array_files_rearranged { input: ready = sleep.done, a = [], b = [make_files.bananeira, make_files.balanca] }
+    call read_array_files as read_array_files_rearranged { input: ready = sleep_some_more.done, a = [], b = [make_files.bananeira, make_files.balanca] }
+
 
     # Local runtime attributes:
     call read_files_different_docker { input: ready = sleep.done, a = make_files.bananeira, b = make_files.balanca }
