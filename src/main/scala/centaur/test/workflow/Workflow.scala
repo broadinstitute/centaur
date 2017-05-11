@@ -6,6 +6,7 @@ import cats.Apply
 import cats.data.Validated._
 import centaur.test._
 import centaur.test.metadata.WorkflowMetadata
+import centaur.test.workflow.Workflow._
 import com.typesafe.config.{Config, ConfigFactory}
 import configs.Result
 import configs.syntax._
@@ -17,6 +18,11 @@ sealed abstract class Workflow {
   def testName: String
   def data: WorkflowData
   def backends: List[String]
+
+  def metadataExpectation: Option[WorkflowMetadata] = this match {
+    case WorkflowWithMetadata(_, _, metadata, _) => Option(metadata)
+    case _: WorkflowWithoutMetadata => None
+  }
 
   def toWorkflowSubmission(refreshToken: Option[String]) = WorkflowSingleSubmission(data.wdl, data.inputs, data.options, data.zippedImports, refreshToken)
 }
