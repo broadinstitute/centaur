@@ -31,7 +31,7 @@ case class LocalCheckFiles() extends CheckFiles {
     {directory: String =>
       val dir = new java.io.File(directory)
       def deleteDir(d: File) {
-        d.listFiles.toList.foreach { f =>
+        Option(d.listFiles).getOrElse(Array.empty).toList.foreach { f =>
 
           //directories must be empty to be deleted
           if (f.isDirectory) 
