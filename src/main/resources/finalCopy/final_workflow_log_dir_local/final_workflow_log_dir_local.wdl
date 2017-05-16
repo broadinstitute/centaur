@@ -12,4 +12,7 @@ workflow wf_hello {
   output {
      hello.out
   }
+  runtime {
+      docker: "ubuntu:latest"
+    }
 }

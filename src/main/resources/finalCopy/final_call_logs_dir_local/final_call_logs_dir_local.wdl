@@ -5,6 +5,9 @@ task hello {
   output {
     File out = "test.out"
   }
+  runtime {
+      docker: "ubuntu:latest"
+  }
 }
 
 workflow wf_hello {
