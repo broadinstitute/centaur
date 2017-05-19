@@ -7,8 +7,6 @@ import cats._, cats.implicits._
 import cats.data.Validated.{Invalid, Valid}
 import centaur.api.CentaurCromwellClient
 import centaur.test.formulas.TestFormulas
-import centaur.test.standard.StandardTestCase
-import centaur.test.standard.StandardTestFormat.WorkflowSuccessTest
 import centaur.test.workflow.Workflow
 import org.scalatest.{FlatSpec, Matchers, ParallelTestExecution}
 import com.google.cloud.storage._
