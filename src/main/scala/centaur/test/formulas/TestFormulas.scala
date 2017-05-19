@@ -26,55 +26,41 @@ import io.circe.parser._
   * for comprehension. These assembled formulas can then be run by a client
   */
 object TestFormulas {
-  def runWorkflowUntilTerminalStatus(workflow: Workflow, status: TerminalStatus): Test[SubmittedWorkflow] = {
+  private def runWorkflowUntilTerminalStatus(workflow: Workflow, status: TerminalStatus): Test[SubmittedWorkflow] = {
     for {
       s <- submitWorkflow(workflow)
       _ <- pollUntilStatus(s, status)
     } yield s
   }
 
-  def runSuccessfulWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = runWorkflowUntilTerminalStatus(workflow, Succeeded)
-  def runFailingWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = runWorkflowUntilTerminalStatus(workflow, Failed)
+  private def runSuccessfulWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = runWorkflowUntilTerminalStatus(workflow, Succeeded)
+  private def runFailingWorkflow(workflow: Workflow): Test[SubmittedWorkflow] = runWorkflowUntilTerminalStatus(workflow, Failed)
 
-  def runSuccessfulWorkflowAndVerifyMetadata(workflow: Workflow): Test[Unit] = runWorkflowAndVerifyMetadata(workflow, runSuccessfulWorkflow)
-  def runFailingWorkflowAndVerifyMetadata(workflow: Workflow): Test[Unit] = runWorkflowAndVerifyMetadata(workflow, runFailingWorkflow)
-  def runSuccessfulWorkflowAndVerifyCacheMetadata(workflow: Workflow, cacheHit: UUID): Test[Unit] = runWorkflowAndVerifyCacheMetadata(workflow, runSuccessfulWorkflow, cacheHit)
+  def runSuccessfulWorkflowAndVerifyMetadata(workflowDefinition: Workflow): Test[Unit] = for {
+    w <- runSuccessfulWorkflow(workflowDefinition)
+    _ <- validateMetadata(w, workflowDefinition)
+  } yield ()
 
-  def runWorkflowAndVerifyCacheMetadata(workflow: Workflow, f: Workflow => Test[SubmittedWorkflow], cacheHitWorkflow: UUID): Test[Unit] = {
-    workflow match {
-      case _: WorkflowWithoutMetadata => throw new Exception("Scala type system: 3, Jeff: 0")
-      case r: WorkflowWithMetadata =>
-        for {
-          w <- f(r)
-          _ <- validateMetadata(w, r.metadata, Option(cacheHitWorkflow))
-        } yield ()
-    }
-  }
+  def runFailingWorkflowAndVerifyMetadata(workflowDefinition: Workflow): Test[Unit] = for {
+    w <- runFailingWorkflow(workflowDefinition)
+    _ <- validateMetadata(w, workflowDefinition)
+  } yield ()
 
-  def runWorkflowAndVerifyMetadata(workflow: Workflow, f: Workflow => Test[SubmittedWorkflow]): Test[Unit] = {
-    // FIXME: This is horrible, but I just wanted to add this and copy/paste was easier than thinking
-    workflow match {
-      case _: WorkflowWithoutMetadata => throw new Exception("Scala type system: 3, Jeff: 0")
-      case r: WorkflowWithMetadata =>
-        for {
-          w <- f(r)
-          _ <- validateMetadata(w, r.metadata)
-        } yield ()
-    }
-  }
-
-  def runSequentialCachingWorkflows(firstAttempt: Workflow, secondAttempt: Workflow) = {
+  def runWorkflowTwiceExpectingCaching(workflowDefinition: Workflow): Test[Unit] = {
     for {
-      firstWF <- runWorkflowUntilTerminalStatus(firstAttempt, Succeeded)
-      _ <- runSuccessfulWorkflowAndVerifyCacheMetadata(secondAttempt, firstWF.id.id)
+      firstWF <- runSuccessfulWorkflow(workflowDefinition)
+      secondWf <- runSuccessfulWorkflow(workflowDefinition)
+      metadata <- validateMetadata(secondWf, workflowDefinition, Option(firstWF.id.id))
+      _ <- validateNoCacheMisses(metadata, workflowDefinition.testName)
     } yield ()
   }
 
-  def runCachingTurnedOffWorkflow(workflow: Workflow) = {
+  def runWorkflowTwiceExpectingNoCaching(workflowDefinition: Workflow): Test[Unit] = {
     for {
-      testWf <- runWorkflowUntilTerminalStatus(workflow, Succeeded)
-      metadata <- retrieveMetadata(testWf)
-      _ <- validateNoCacheHits(metadata, workflow.testName)
+      _ <- runSuccessfulWorkflow(workflowDefinition) // Build caches
+      testWf <- runSuccessfulWorkflow(workflowDefinition)
+      metadata <- validateMetadata(testWf, workflowDefinition)
+      _ <- validateNoCacheHits(metadata, workflowDefinition.testName)
     } yield ()
   }
 
