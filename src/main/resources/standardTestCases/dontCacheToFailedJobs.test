@@ -1,0 +1,12 @@
+name: dontCacheToFailedJobs
+testFormat: runtwiceexpectingnocallcaching
+
+files {
+  wdl: dont_cache_to_failed_jobs/dont_cache_to_failed_jobs.wdl
+}
+
+metadata {
+  workflowName: dontCacheToFailedJobs
+  status: Failed
+  "calls.dontCacheToFailedJobs.failing_task.callCaching.result": "Cache Miss"
+}
