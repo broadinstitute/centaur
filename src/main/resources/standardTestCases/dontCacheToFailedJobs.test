@@ -1,12 +1,13 @@
-name: dontCacheToFailedJobs
-testFormat: runtwiceexpectingnocallcaching
+name: dont_cache_to_failed_jobs
+testFormat: runfailingtwiceexpectingnocallcaching
 
 files {
   wdl: dont_cache_to_failed_jobs/dont_cache_to_failed_jobs.wdl
 }
 
 metadata {
-  workflowName: dontCacheToFailedJobs
+  workflowName: dont_cache_to_failed_jobs
   status: Failed
-  "calls.dontCacheToFailedJobs.failing_task.callCaching.result": "Cache Miss"
+  "calls.dont_cache_to_failed_jobs.failing_task.callCaching.result": "Cache Miss"
+  "calls.dont_cache_to_failed_jobs.failing_task.callCaching.allowResultReuse": false
 }

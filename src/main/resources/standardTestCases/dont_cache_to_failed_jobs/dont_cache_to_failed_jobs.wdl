@@ -8,6 +8,6 @@ task failing_task {
     }
 }
 
-workflow dontCacheToFailedJobs {
+workflow dont_cache_to_failed_jobs {
   call failing_task
 }
