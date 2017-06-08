@@ -1,0 +1,13 @@
+name: fofn_caching
+testFormat: runtwiceexpectingcallcaching
+backends: [Jes]
+
+files {
+  wdl: fofn_caching/fofn_caching.wdl
+}
+
+metadata {
+  workflowName: fofn_caching
+  status: Succeeded
+  "calls.fofn_caching.use_fofn.callCaching.result": "Cache Hit: <<CACHE_HIT_UUID>>:fofn_caching.use_fofn:-1"
+}
