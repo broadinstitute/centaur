@@ -1,6 +1,6 @@
 name: fofn_caching
 testFormat: runtwiceexpectingcallcaching
-backends: [Jes]
+backends: [Jes-Caching-No-Copy]
 
 files {
   wdl: fofn_caching/fofn_caching.wdl
