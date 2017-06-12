@@ -15,7 +15,7 @@ EXIT_CODE=1
 PROGNAME="$(basename $0)"
 
 usage="
-$PROGNAME [-b branch] [-j jar path] [-r rundir] [-c config file] [-t refresh token] [-e excludeTag]
+$PROGNAME [-b branch] [-j jar path] [-r rundir] [-c config file] [-t refresh token] [-e excludeTag] [-i testDirPath]
 
 Builds and runs specified branch of Cromwell and runs Centaur against it.
 
@@ -27,13 +27,14 @@ Arguments:
     -t    Refresh Token that can be passed into the appropriate options file
     -e    If supplied, will exclude tests with this tag
     -p    If supplied, number of tests to be run in parallel. 16 is the default
+    -i    If supplied, will run the tests in this directory instead of the standard tests
 "
 
 INITIAL_DIR=$(pwd)
 RUN_DIR=$(pwd)
 TEST_THREAD_COUNT=16
 
-while getopts ":hb:r:c:p:j:t:e:" option; do
+while getopts ":hb:r:c:p:j:t:e:i:" option; do
     case "$option" in
         h) echo "$usage"
             exit
@@ -51,6 +52,8 @@ while getopts ":hb:r:c:p:j:t:e:" option; do
         t) REFRESH_TOKEN=-Dcentaur.optionalToken=$(cat "${OPTARG}")
             ;;
         p) TEST_THREAD_COUNT="${OPTARG}"
+            ;;
+        i) TEST_CASE_DIR="${OPTARG}"
             ;;
         e) EXCLUDE_TAG+=("${OPTARG}")
             ;;
@@ -119,16 +122,20 @@ TEST_STATUS="failed"
 sbt test:compile
 CP=$(sbt "export test:dependency-classpath" --error)
 
+if [ -n "${TEST_CASE_DIR}" ]; then
+    RUN_SPECIFIED_TEST_DIR_CMD="-Dcentaur.standardTestCasePath=${TEST_CASE_DIR}"
+fi
+
 if [[ -n ${EXCLUDE_TAG[*]} ]]; then
     echo "Running Centaur filtering out ${EXCLUDE_TAG[*]} tests"
     EXCLUDE=""
     for val in "${EXCLUDE_TAG[@]}"; do 
         EXCLUDE="-l $val "$EXCLUDE
     done
-    TEST_COMMAND="java ${REFRESH_TOKEN} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT} "$EXCLUDE
+    TEST_COMMAND="java ${REFRESH_TOKEN} ${RUN_SPECIFIED_TEST_DIR_CMD} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT} "$EXCLUDE
 else
     echo "Running Centaur with sbt test"
-    TEST_COMMAND="java ${REFRESH_TOKEN} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT}"
+    TEST_COMMAND="java ${REFRESH_TOKEN} ${RUN_SPECIFIED_TEST_DIR_CMD} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT}"
 fi
 
 
