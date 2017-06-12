@@ -48,4 +48,3 @@ workflow invalidate_bad_caches {
     call make_file as invalidate_cache_and_remake_file { input: ready = delete_file_in_gcs.done }
     call read_file { input: input_file = invalidate_cache_and_remake_file.out }
 }
-

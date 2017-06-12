@@ -9,6 +9,8 @@ files {
 metadata {
   workflowName: fofn_caching
   status: Succeeded
+  # We expect this to cache hit, because the backend re-using original file paths, the fofn will have the same content
+  # hence the same hash, so the whole call should be strictly similar to the first run
   "calls.fofn_caching.use_fofn.callCaching.result": "Cache Hit: <<CACHE_HIT_UUID>>:fofn_caching.use_fofn:-1"
 }
 
