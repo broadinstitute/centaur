@@ -1,6 +1,0 @@
-{
-  "invalidate_bad_caches.running_on_jes": true,
-  "invalidate_bad_caches.make_file.targetBackend": "Jes-Caching-No-Copy",
-  "invalidate_bad_caches.read_file.targetBackend": "Jes-Caching-No-Copy",
-  "invalidate_bad_caches.delete_file_in_gcs.targetBackend": "Jes-Caching-No-Copy"
-}

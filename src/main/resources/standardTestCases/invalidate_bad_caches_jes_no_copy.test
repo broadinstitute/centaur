@@ -3,8 +3,7 @@ testFormat: workflowsuccess
 backends: [Jes-Caching-No-Copy]
 
 files {
-  wdl: invalidate_bad_caches/invalidate_bad_caches.wdl
-  inputs: invalidate_bad_caches/jes_no_copy.inputs
+  wdl: invalidate_bad_caches/invalidate_bad_caches_no_copy.wdl
 }
 
 metadata {
