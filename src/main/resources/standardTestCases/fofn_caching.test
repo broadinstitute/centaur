@@ -11,3 +11,8 @@ metadata {
   status: Succeeded
   "calls.fofn_caching.use_fofn.callCaching.result": "Cache Hit: <<CACHE_HIT_UUID>>:fofn_caching.use_fofn:-1"
 }
+
+fileSystemCheck: "gcs"
+outputExpectations {
+  "gs://cloud-cromwell-dev/cromwell_execution/travis/fofn_caching/<<UUID>>/call-use_fofn/call_caching_placeholder.txt": 1
+}
