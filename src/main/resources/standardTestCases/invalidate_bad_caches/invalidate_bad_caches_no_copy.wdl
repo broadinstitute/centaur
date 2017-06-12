@@ -1,4 +1,5 @@
 task make_file {
+    Boolean ready = true
     command {
         echo woohoo > out.txt
     }
@@ -40,17 +41,11 @@ task delete_file_in_gcs {
 }
 
 workflow invalidate_bad_caches {
-    Boolean running_on_jes
-
     call make_file
 
     call delete_file_in_gcs { input: file_path = make_file.out }
 
-    Boolean done = select_first([delete_file_in_gcs.done, delete_file_local.done])
-
-    if (done) {
-        call make_file as invalidate_cache_and_remake_file
-        call read_file { input: input_file = invalidate_cache_and_remake_file.out }
-    }
+    call make_file as invalidate_cache_and_remake_file { input: ready = delete_file_in_gcs.done }
+    call read_file { input: input_file = invalidate_cache_and_remake_file.out }
 }
 
