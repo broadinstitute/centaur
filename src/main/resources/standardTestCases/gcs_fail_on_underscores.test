@@ -1,0 +1,18 @@
+name: gcs_fail_on_underscores
+testFormat: workflowfailure
+backends: [Jes]
+
+files {
+  inputs: gcs_fail_on_underscores/gcs_fail_on_underscores.inputs
+  wdl: gcs_fail_on_underscores/gcs_fail_on_underscores.wdl
+}
+
+metadata {
+  workflowName: size_wf
+  "calls.size_wf.size_task.failures.0.causedBy.0.causedBy.0.causedBy.0.message": """The bucket name in GCS path 'gs://centaur_bucket_name_with_underscores/gumby.png' is not compatible with
+URI host name standards, but URI host name compatibility is a requirement for Cromwell's GCS filesystem support.
+This bucket name contains an underscore which is not a valid character in a URI host."""
+  "failures.0.causedBy.0.causedBy.0.causedBy.0.message": """The bucket name in GCS path 'gs://centaur_bucket_name_with_underscores/gumby.png' is not compatible with
+URI host name standards, but URI host name compatibility is a requirement for Cromwell's GCS filesystem support.
+This bucket name contains an underscore which is not a valid character in a URI host."""
+}
