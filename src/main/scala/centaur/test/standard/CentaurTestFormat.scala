@@ -13,7 +13,7 @@ sealed abstract class CentaurTestFormat(val name: String) {
     case WorkflowFailureTest => "fail during execution"
     case RunTwiceExpectingCallCachingTest => "call cache the second run of"
     case RunTwiceExpectingNoCallCachingTest => "NOT call cache the second run of"
-    case RunFailingTwiceExpectingNoCallCachingTest => "NOT call cache the second run of"
+    case RunFailingTwiceExpectingNoCallCachingTest => "Fail the first run and NOT call cache the second run of"
   }
 }
 
