@@ -35,4 +35,7 @@ metadata {
   "calls.call_cache_capoeira.read_files_failOnStderr_expression.callCaching.hit": true
   "calls.call_cache_capoeira.read_array_files.callCaching.hit": false
   "calls.call_cache_capoeira.read_array_files_rearranged.callCaching.hit": false
+  
+  // Check that hashes are published to metadata
+  "calls.call_cache_capoeira.read_array_files.callCaching.hashes.backendName": "509820290D57F333403F490DDE7316F4"
 }
