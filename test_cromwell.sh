@@ -123,7 +123,7 @@ sbt test:compile
 CP=$(sbt "export test:dependency-classpath" --error)
 
 if [ -n "${TEST_CASE_DIR}" ]; then
-    RUN_SPECIFIED_TEST_DIR_CMD="-Dcentaur.standardTestCasePath=${TEST_CASE_DIR}"
+    RUN_SPECIFIED_TEST_DIR_CMD="-Dcentaur.standardTestCasePath=${TEST_CASE_DIR} -Dcentaur.sendReceiveTimeout=5\minutes"
 fi
 
 if [[ -n ${EXCLUDE_TAG[*]} ]]; then
