@@ -13,7 +13,6 @@
   "PairedEndSingleSampleWorkflow.unmapped_bam_suffix": ".bam",
 
   "##_COMMENT3": "REFERENCES",
-  "PairedEndSingleSampleWorkflow.fingerprint_genotypes_file": "gs://dsde-data-na12878-public/NA12878.hg38.reference.fingerprint.vcf",
   "PairedEndSingleSampleWorkflow.contamination_sites_vcf": "gs://broad-references/hg38/v0/WholeGenomeShotgunContam.vcf",
   "PairedEndSingleSampleWorkflow.contamination_sites_vcf_index": "gs://broad-references/hg38/v0/WholeGenomeShotgunContam.vcf.idx",
   "PairedEndSingleSampleWorkflow.wgs_calling_interval_list": "gs://broad-references/hg38/v0/wgs_calling_regions.hg38.interval_list",
@@ -40,9 +39,6 @@
   "PairedEndSingleSampleWorkflow.dbSNP_vcf_index": "gs://broad-references/hg38/v0/Homo_sapiens_assembly38.dbsnp138.vcf.idx",
   "PairedEndSingleSampleWorkflow.wgs_coverage_interval_list": "gs://broad-references/hg38/v0/wgs_coverage_regions.hg38.interval_list",
   "PairedEndSingleSampleWorkflow.wgs_evaluation_interval_list": "gs://broad-references/hg38/v0/wgs_evaluation_regions.hg38.interval_list",
-
-  "##_COMMENT4": "PRIVATE REFERENCES",
-  "PairedEndSingleSampleWorkflow.haplotype_database_file": "gs://broad-references-private/hg38/v0/Homo_sapiens_assembly38.haplotype_database.txt",
 
   "##_COMMENT5": "DISK SIZES + MISC",
   "PairedEndSingleSampleWorkflow.flowcell_small_disk": 100,
