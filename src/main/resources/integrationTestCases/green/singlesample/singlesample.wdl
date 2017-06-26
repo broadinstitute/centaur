@@ -25,14 +25,14 @@
 ## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
 ## licensing information pertaining to the included programs.
 
-# PRIVATE #
+
 # The internal production version of this WDL must have Private and Public block tags
 # annotated to distinguish the content that can be made public versus what cannot.
 
-# PUBLIC #
+
 # TASK DEFINITIONS
 
-# PRIVATE #
+
 task CollectQualityYieldMetrics {
   File input_bam
   String metrics_filename
@@ -79,7 +79,7 @@ task CheckFinalVcfExtension {
   }
 }
 
-# PUBLIC #
+
 # Get version of BWA
 task GetBwaVersion {
   command {
@@ -97,7 +97,7 @@ task GetBwaVersion {
   }
 }
 
-# PUBLIC #
+
 # Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment
 task SamToFastqAndBwaMem {
   File input_bam
@@ -156,7 +156,7 @@ task SamToFastqAndBwaMem {
   }
 }
 
-# PUBLIC #
+
 # Merge original input uBAM file with BWA-aligned BAM file
 task MergeBamAlignment {
   File unmapped_bam
@@ -210,7 +210,7 @@ task MergeBamAlignment {
   }
 }
 
-# PUBLIC #
+
 # Sort BAM file by coordinate order and fix tag values for NM and UQ
 task SortAndFixTags {
   File input_bam
@@ -251,13 +251,13 @@ task SortAndFixTags {
   }
 }
 
-# PRIVATE #
+
 # The tasks CollectUnsortedReadgroupBamQualityMetrics, CollectReadgroupBamQualityMetrics,
 # and CollectAggregationMetrics are all variations of CollectMultipleMetrics.
 # They have been separated because we cannot glob their outputs.
 # When glob works again, they can be merged back into one task.
 
-# PRIVATE #
+
 task CollectUnsortedReadgroupBamQualityMetrics {
   File input_bam
   String output_bam_prefix
@@ -297,7 +297,7 @@ task CollectUnsortedReadgroupBamQualityMetrics {
   }
 }
 
-# PRIVATE #
+
 task CollectReadgroupBamQualityMetrics {
   File input_bam
   File input_bam_index
@@ -332,7 +332,7 @@ task CollectReadgroupBamQualityMetrics {
   }
 }
 
-# PRIVATE #
+
 task CollectAggregationMetrics {
   File input_bam
   File input_bam_index
@@ -382,7 +382,7 @@ task CollectAggregationMetrics {
   }
 }
 
-# PUBLIC #
+
 # Mark duplicate reads to avoid counting non-independent observations
 task MarkDuplicates {
   Array[File] input_bams
@@ -419,7 +419,7 @@ task MarkDuplicates {
   }
 }
 
-# PUBLIC #
+
 # Generate sets of intervals for scatter-gathering over chromosomes
 task CreateSequenceGroupingTSV {
   File ref_dict
@@ -475,7 +475,7 @@ task CreateSequenceGroupingTSV {
   }
 }
 
-# PUBLIC #
+
 # Generate Base Quality Score Recalibration (BQSR) model
 task BaseRecalibrator {
   File input_bam
@@ -518,7 +518,7 @@ task BaseRecalibrator {
   }
 }
 
-# PUBLIC #
+
 # Apply Base Quality Score Recalibration (BQSR) model
 task ApplyBQSR {
   File input_bam
@@ -561,7 +561,7 @@ task ApplyBQSR {
   }
 }
 
-# PUBLIC #
+
 # Combine multiple recalibration tables from scattered BaseRecalibrator runs
 task GatherBqsrReports {
   Array[File] input_bqsr_reports
@@ -585,7 +585,7 @@ task GatherBqsrReports {
   }
 }
 
-# PUBLIC #
+
 # Combine multiple recalibrated BAM files from scattered ApplyRecalibration runs
 task GatherBamFiles {
   Array[File] input_bams
@@ -613,7 +613,7 @@ task GatherBamFiles {
   }
 }
 
-# PRIVATE #
+
 task ValidateSamFile {
   File input_bam
   File? input_bam_index
@@ -647,7 +647,7 @@ task ValidateSamFile {
   }
 }
 
-# PRIVATE #
+
 # TODO - CollectWgsMetrics and CollectRawWgsMetrics can be combined by a locus-iterating collector
 task CollectWgsMetrics {
   File input_bam
@@ -676,7 +676,7 @@ task CollectWgsMetrics {
   }
 }
 
-# PRIVATE #
+
 task CollectRawWgsMetrics {
   File input_bam
   File input_bam_index
@@ -705,7 +705,7 @@ task CollectRawWgsMetrics {
   }
 }
 
-# PRIVATE #
+
 task CalculateReadGroupChecksum {
   File input_bam
   File input_bam_index
@@ -729,7 +729,7 @@ task CalculateReadGroupChecksum {
   }
 }
 
-# PRIVATE #
+
 # Notes on the contamination estimate:
 # The contamination value is read from the FREEMIX field of the selfSM file output by verifyBamId
 #
@@ -852,7 +852,7 @@ task ScatterIntervalList {
 }
 
 
-# PUBLIC #
+
 # Call variants on a single sample with HaplotypeCaller to produce a GVCF
 task HaplotypeCaller {
   File input_bam
@@ -894,7 +894,7 @@ task HaplotypeCaller {
   }
 }
 
-# PUBLIC #
+
 # Combine multiple VCFs or GVCFs from scattered HaplotypeCaller runs
 task MergeVCFs {
   Array[File] input_vcfs
@@ -922,7 +922,7 @@ task MergeVCFs {
   }
 }
 
-# PRIVATE #
+
 task ValidateGVCF {
   File input_vcf
   File input_vcf_index
@@ -953,7 +953,7 @@ task ValidateGVCF {
   }
 }
 
-# PRIVATE #
+
 task CollectGvcfCallingMetrics {
   File input_vcf
   File input_vcf_index
@@ -986,7 +986,7 @@ task CollectGvcfCallingMetrics {
   }
 }
 
-# PUBLIC #
+
 # Convert BAM file to CRAM format
 task ConvertToCram {
   File input_bam
@@ -1054,17 +1054,17 @@ command <<<
   }
 }
 
-# PUBLIC #
+
 # WORKFLOW DEFINITION
 workflow PairedEndSingleSampleWorkflow {
 
-  # PRIVATE #
+  
   File contamination_sites_vcf
   File contamination_sites_vcf_index
   File wgs_evaluation_interval_list
   File wgs_coverage_interval_list
 
-  # PUBLIC #
+  
   String sample_name
   String base_file_name
   String final_gvcf_name
@@ -1102,7 +1102,7 @@ workflow PairedEndSingleSampleWorkflow {
 
   String recalibrated_bam_basename = base_file_name + ".aligned.duplicates_marked.recalibrated"
 
-  # PUBLIC #
+  
   # Get the version of BWA to include in the PG record in the header of the BAM produced
   # by MergeBamAlignment.
   call GetBwaVersion
@@ -1112,14 +1112,14 @@ workflow PairedEndSingleSampleWorkflow {
         vcf_filename = final_gvcf_name
    }
 
-  # PUBLIC #
+  
   # Align flowcell-level unmapped input bams in parallel
   scatter (unmapped_bam in flowcell_unmapped_bams) {
 
     String sub_strip_path = "gs://.*/"
     String sub_strip_unmapped = unmapped_bam_suffix + "$"
     String sub_sub = sub(sub(unmapped_bam, sub_strip_path, ""), sub_strip_unmapped, "")
-    # PRIVATE #
+    
     call CollectQualityYieldMetrics {
       input:
         input_bam = unmapped_bam,
@@ -1128,7 +1128,7 @@ workflow PairedEndSingleSampleWorkflow {
         preemptible_tries = preemptible_tries
     }
 
-    # PUBLIC #
+    
     # Map reads to reference
     call SamToFastqAndBwaMem {
       input:
@@ -1148,7 +1148,7 @@ workflow PairedEndSingleSampleWorkflow {
         preemptible_tries = preemptible_tries
      }
 
-    # PUBLIC #
+    
     # Merge original uBAM and BWA-aligned BAM
     call MergeBamAlignment {
       input:
@@ -1164,7 +1164,7 @@ workflow PairedEndSingleSampleWorkflow {
         preemptible_tries = preemptible_tries
     }
 
-    # PUBLIC #
+    
     # Sort and fix tags in the merged BAM
     call SortAndFixTags as SortAndFixReadGroupBam {
       input:
@@ -1177,7 +1177,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = flowcell_medium_disk
     }
 
-    # PRIVATE #
+    
     # called to help in finding problems early.
     # if too time consuming and not helpful, can be removed.
     call ValidateSamFile as ValidateReadGroupSamFile {
@@ -1191,7 +1191,7 @@ workflow PairedEndSingleSampleWorkflow {
         preemptible_tries = preemptible_tries
     }
 
-    # PRIVATE #
+    
     # no reference as the input here is unsorted, providing a reference would cause an error
     call CollectUnsortedReadgroupBamQualityMetrics {
       input:
@@ -1199,10 +1199,10 @@ workflow PairedEndSingleSampleWorkflow {
         output_bam_prefix = sub_sub + ".readgroup",
         disk_size = flowcell_medium_disk
     }
-  # PUBLIC #
+  
   }
 
-  # PUBLIC #
+  
   # Aggregate aligned+merged flowcell BAM files and mark duplicates
   call MarkDuplicates {
     input:
@@ -1212,7 +1212,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = agg_large_disk
   }
 
-  # PUBLIC #
+  
   # Sort aggregated+deduped BAM file and fix tags
   call SortAndFixTags as SortAndFixSampleBam {
     input:
@@ -1226,7 +1226,7 @@ workflow PairedEndSingleSampleWorkflow {
   }
 
 
-  # PUBLIC #
+  
   # Create list of sequences for scatter-gather parallelization
   call CreateSequenceGroupingTSV {
     input:
@@ -1234,7 +1234,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = preemptible_tries
   }
 
-  # PRIVATE #
+  
   call CheckContamination {
     input:
       input_bam = SortAndFixSampleBam.output_bam,
@@ -1246,7 +1246,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PUBLIC #
+  
   # Perform Base Quality Score Recalibration (BQSR) on the sorted BAM in parallel
   scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping) {
     # Generate the recalibration model by interval
@@ -1268,7 +1268,7 @@ workflow PairedEndSingleSampleWorkflow {
     }
   }
 
-  # PUBLIC #
+  
   # Merge the recalibration reports resulting from by-interval recalibration
   call GatherBqsrReports {
     input:
@@ -1279,7 +1279,7 @@ workflow PairedEndSingleSampleWorkflow {
   }
 
   scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) {
-  # PUBLIC #
+  
     # Apply the recalibration model by interval
     call ApplyBQSR {
       input:
@@ -1295,7 +1295,7 @@ workflow PairedEndSingleSampleWorkflow {
         preemptible_tries = agg_preemptible_tries
     }
   }
-  # PUBLIC #
+  
   # Merge the recalibrated BAM files resulting from by-interval recalibration
 
   call GatherBamFiles {
@@ -1306,7 +1306,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PRIVATE #
+  
   call CollectReadgroupBamQualityMetrics {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1318,7 +1318,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = agg_small_disk
   }
 
-  # PRIVATE #
+  
   call ValidateSamFile as ValidateAggregatedSamFile {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1331,7 +1331,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PRIVATE #
+  
   call CollectAggregationMetrics {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1343,7 +1343,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = agg_small_disk
   }
 
-  # PRIVATE #
+  
   call CollectWgsMetrics {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1355,7 +1355,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = agg_small_disk
   }
 
-  # PRIVATE #
+  
   call CollectRawWgsMetrics {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1367,7 +1367,7 @@ workflow PairedEndSingleSampleWorkflow {
       disk_size = agg_small_disk
   }
 
-  # PRIVATE #
+  
   call CalculateReadGroupChecksum {
     input:
       input_bam = GatherBamFiles.output_bam,
@@ -1377,7 +1377,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PUBLIC #
+  
   # Convert the final merged recalibrated BAM file to CRAM format
   call ConvertToCram {
     input:
@@ -1389,7 +1389,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PRIVATE #
+  
 # call ValidateSamFile as ValidateCram {
 #   input:
 #     input_bam = ConvertToCram.output_cram,
@@ -1405,7 +1405,7 @@ workflow PairedEndSingleSampleWorkflow {
 # }
 
 
-   # PRIVATE #
+   
 
   call CramToBam {
     input:
@@ -1441,16 +1441,16 @@ workflow PairedEndSingleSampleWorkflow {
       break_bands_at_multiples_of = break_bands_at_multiples_of
   }
 
-  # PUBLIC #
+  
   # Call variants in parallel over WGS calling intervals
   scatter (index in range(ScatterIntervalList.interval_count)) {
-    # PUBLIC #
+    
     # Generate GVCF by interval
     call HaplotypeCaller {
       input:
-        # PRIVATE #
+        
         contamination = CheckContamination.contamination,
-        # PUBLIC #
+        
         input_bam = GatherBamFiles.output_bam,
         input_bam_index = GatherBamFiles.output_bam_index,
         interval_list = ScatterIntervalList.out[index],
@@ -1463,7 +1463,7 @@ workflow PairedEndSingleSampleWorkflow {
      }
   }
 
-  # PUBLIC #
+  
   # Combine by-interval GVCFs into a single sample GVCF file
   call MergeVCFs {
     input:
@@ -1474,7 +1474,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PRIVATE #
+  
   call ValidateGVCF {
     input:
       input_vcf = MergeVCFs.output_vcf,
@@ -1489,7 +1489,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PRIVATE #
+  
   call CollectGvcfCallingMetrics {
     input:
       input_vcf = MergeVCFs.output_vcf,
@@ -1503,7 +1503,7 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = agg_preemptible_tries
   }
 
-  # PUBLIC #
+  
   # NOTE TO COMMS: Outputs must be redacted manually pending bug fix!!!
   # Outputs that will be retained when execution is complete
 
