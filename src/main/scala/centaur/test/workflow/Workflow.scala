@@ -20,8 +20,6 @@ final case class Workflow private(testName: String,
                                   backends: BackendsRequirement) {
   def toWorkflowSubmission(refreshToken: Option[String]) = WorkflowSingleSubmission(
     wdl = data.wdl,
-    workflowType = data.workflowType,
-    workflowTypeVersion = data.workflowTypeVersion,
     inputsJson = data.inputs,
     options = data.options,
     customLabels = Option(data.labels),
