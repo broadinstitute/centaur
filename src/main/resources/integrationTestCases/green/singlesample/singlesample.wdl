@@ -382,69 +382,6 @@ task CollectAggregationMetrics {
   }
 }
 
-# PRIVATE #
-task CrossCheckFingerprints {
-  Array[File] input_bams
-  Array[File] input_bam_indexes
-  File? haplotype_database_file
-  String metrics_filename
-  Int disk_size
-  Int preemptible_tries
-
-  command <<<
-    java -Dsamjdk.buffer_size=131072 -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms2000m \
-     -jar /usr/gitc/picard.jar \
-     CrosscheckReadGroupFingerprints \
-     OUTPUT=${metrics_filename} \
-     HAPLOTYPE_MAP=${haplotype_database_file} \
-     EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-     INPUT=${sep=' INPUT=' input_bams} \
-     LOD_THRESHOLD=-20.0
-  >>>
-  runtime {
-    preemptible: preemptible_tries
-    memory: "2 GB"
-    disks: "local-disk " + disk_size + " HDD"
-  }
-  output {
-    File metrics = "${metrics_filename}"
-  }
-}
-
-# PRIVATE #
-task CheckFingerprint {
-  File input_bam
-  File input_bam_index
-  String output_basename
-  File? haplotype_database_file
-  File? genotypes
-  String sample
-  Int disk_size
-  Int preemptible_tries
-
-  command <<<
-    java -Dsamjdk.buffer_size=131072 -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xms1024m  \
-    -jar /usr/gitc/picard.jar \
-    CheckFingerprint \
-    INPUT=${input_bam} \
-    OUTPUT=${output_basename} \
-    GENOTYPES=${genotypes} \
-    HAPLOTYPE_MAP=${haplotype_database_file} \
-    SAMPLE_ALIAS="${sample}" \
-    IGNORE_READ_GROUPS=true
-
-  >>>
- runtime {
-    preemptible: preemptible_tries
-    memory: "1 GB"
-    disks: "local-disk " + disk_size + " HDD"
-  }
-  output {
-    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
-    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics"
-  }
-}
-
 # PUBLIC #
 # Mark duplicate reads to avoid counting non-independent observations
 task MarkDuplicates {
@@ -1124,8 +1061,6 @@ workflow PairedEndSingleSampleWorkflow {
   # PRIVATE #
   File contamination_sites_vcf
   File contamination_sites_vcf_index
-  File? fingerprint_genotypes_file
-  File? haplotype_database_file
   File wgs_evaluation_interval_list
   File wgs_coverage_interval_list
 
@@ -1290,18 +1225,6 @@ workflow PairedEndSingleSampleWorkflow {
       preemptible_tries = 0
   }
 
-  # PRIVATE #
-  if (defined(haplotype_database_file)) {
-    call CrossCheckFingerprints {
-      input:
-        input_bams = SortAndFixSampleBam.output_bam,
-        input_bam_indexes = SortAndFixSampleBam.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        metrics_filename = sample_name + ".crosscheck",
-        disk_size = agg_small_disk,
-        preemptible_tries = agg_preemptible_tries
-    }
-  }
 
   # PUBLIC #
   # Create list of sequences for scatter-gather parallelization
@@ -1418,21 +1341,6 @@ workflow PairedEndSingleSampleWorkflow {
       ref_fasta = ref_fasta,
       ref_fasta_index = ref_fasta_index,
       disk_size = agg_small_disk
-  }
-
-  # PRIVATE #
-  if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
-    call CheckFingerprint {
-      input:
-        input_bam = GatherBamFiles.output_bam,
-        input_bam_index = GatherBamFiles.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        genotypes = fingerprint_genotypes_file,
-        output_basename = base_file_name,
-        sample = sample_name,
-        disk_size = agg_small_disk,
-        preemptible_tries = agg_preemptible_tries
-    }
   }
 
   # PRIVATE #
@@ -1617,8 +1525,6 @@ workflow PairedEndSingleSampleWorkflow {
     File read_group_gc_bias_pdf = CollectReadgroupBamQualityMetrics.gc_bias_pdf
     File read_group_gc_bias_summary_metrics = CollectReadgroupBamQualityMetrics.gc_bias_summary_metrics
 
-    File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
-
     File selfSM = CheckContamination.selfSM
     File depthSM = CheckContamination.depthSM
 
@@ -1638,9 +1544,6 @@ workflow PairedEndSingleSampleWorkflow {
     File agg_pre_adapter_summary_metrics = CollectAggregationMetrics.pre_adapter_summary_metrics
     File agg_quality_distribution_pdf = CollectAggregationMetrics.quality_distribution_pdf
     File agg_quality_distribution_metrics = CollectAggregationMetrics.quality_distribution_metrics
-
-    File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
-    File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
 
     File wgs_metrics = CollectWgsMetrics.metrics
     File raw_wgs_metrics = CollectRawWgsMetrics.metrics
