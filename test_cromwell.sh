@@ -99,7 +99,7 @@ if [[ -n ${CROMWELL_BRANCH} ]]; then
     CROMWELL_JAR=$(find "${RUN_DIR}"/cromwell/target/scala-2.* -name "cromwell-*.jar")
 fi
 
-CROMWELL_MEM_ARGS="-Xms3g -Xmx3g"
+CROMWELL_MEM_ARGS="-Xmx3g"
 echo "Starting Cromwell, jar is ${CROMWELL_JAR}"
 if [ -n "$CONFIG_STRING" ]; then
     java "${CROMWELL_MEM_ARGS} "${CONFIG_STRING}" -jar "${CROMWELL_JAR}" server >> "${CROMWELL_LOG}" 2>&1 &
