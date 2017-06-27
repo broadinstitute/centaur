@@ -21,7 +21,7 @@ object CentaurCromwellClient {
   // See https://github.com/akka/akka-http/issues/602
   // And https://github.com/viktorklang/blog/blob/master/Futures-in-Scala-2.12-part-7.md
   final implicit val blockingEc = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
-  
+
   // Akka HTTP needs both the actor system and a materializer
   final implicit val system = ActorSystem("centaur-acting-like-a-system")
   final implicit val materializer: ActorMaterializer = ActorMaterializer(ActorMaterializerSettings(system))
@@ -54,25 +54,25 @@ object CentaurCromwellClient {
     // We can't recover the future itself with a "recoverWith retry pattern" because it'll timeout anyway from the Await.result
     // We want to keep timing out to catch cases where Cromwell becomes unresponsive
     Try(Await.result(x(), timeout)) recoverWith {
-      case _: TimeoutException 
-           | _: StreamTcpException 
-           | _: IOException if !CromwellManager.isReady && attempt < 5 =>
+      case _: TimeoutException |
+           _: StreamTcpException |
+           _: IOException if !CromwellManager.isReady && attempt < 5 =>
         Thread.sleep(5000)
         awaitFutureCompletion(x, timeout, attempt + 1)
-        // see https://github.com/akka/akka-http/issues/768
-      case unexpected: RuntimeException 
-        if unexpected.getMessage.contains("The http server closed the connection unexpectedly")
-          && !CromwellManager.isReady
-          && attempt < 5 =>
+      // see https://github.com/akka/akka-http/issues/768
+      case unexpected: RuntimeException
+        if unexpected.getMessage.contains("The http server closed the connection unexpectedly") &&
+          !CromwellManager.isReady &&
+          attempt < 5 =>
         Thread.sleep(5000)
         awaitFutureCompletion(x, timeout, attempt + 1)
     }
   }
-  
+
   def sendReceiveFutureCompletion[T](x: () => Future[T]) = {
     awaitFutureCompletion(x, CentaurConfig.sendReceiveTimeout)
   }
-  
+
   def maxWorkflowLengthCompletion[T](x: () => Future[T]) = {
     awaitFutureCompletion(x, CentaurConfig.maxWorkflowLength)
   }

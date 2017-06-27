@@ -28,9 +28,7 @@ sealed abstract class Test[A] {
 }
 
 object Test {
-  def successful[A](value: A) = new Test[A] {
-    override def run: Try[A] = Success(value)
-  }
+  def successful[A](value: A) = testMonad.pure(value)
   
   implicit val testMonad: Monad[Test] = new Monad[Test] {
     override def flatMap[A, B](fa: Test[A])(f: A => Test[B]): Test[B] = {

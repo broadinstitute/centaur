@@ -43,7 +43,7 @@ sealed trait CentaurRunMode {
 
 case class UnmanagedCromwellServer(cromwellUrl : URL) extends CentaurRunMode
 case class ManagedCromwellServer(preRestart: CromwellConfiguration, postRestart: CromwellConfiguration, withRestart: Boolean) extends CentaurRunMode {
-  override val cromwellUrl = new URL("http://localhost:8008")
+  override val cromwellUrl = new URL(s"http://localhost:${CromwellManager.ManagedCromwellPort}")
 }
 
 case class CromwellConfiguration(jar: String, conf: String, logFile: String)
