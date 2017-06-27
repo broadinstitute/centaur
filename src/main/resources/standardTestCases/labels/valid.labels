@@ -1,4 +1,6 @@
 {
   "label-key-1":"label-value-1",
-  "label-key-2":"label-value-2"
+  "label-key-2":"label-value-2",
+  "LABEL-KEY-3":"LABEL-VALUE-3",
+  "only_key": ""
 }

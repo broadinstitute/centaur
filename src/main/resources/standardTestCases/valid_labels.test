@@ -11,9 +11,11 @@ files {
 metadata {
   workflowName: wf_hello
   status: Succeeded
-  "submittedFiles.labels": "{\"label-key-1\":\"label-value-1\",\"label-key-2\":\"label-value-2\"}"
+  "submittedFiles.labels": "{\"label-key-1\":\"label-value-1\",\"label-key-2\":\"label-value-2\",\"LABEL-KEY-3\":\"LABEL-VALUE-3\",\"only_key\":\"\"}"
   "labels.label-key-1": "label-value-1"
   "labels.label-key-2": "label-value-2"
+  "labels.label-key-3": "label-value-3"
+  "labels.only_key": ""
   "labels.cromwell-workflow-id": "cromwell-<<UUID>>"
   "labels.cromwell-workflow-name": "wf_hello"
 }
