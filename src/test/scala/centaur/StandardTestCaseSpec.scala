@@ -34,7 +34,7 @@ class StandardTestCaseSpec extends FlatSpec with Matchers with ParallelTestExecu
   override def afterAll() = CromwellManager.stopCromwell()
 
   def testCases(basePath: Path): List[CentaurTestCase] = {
-    val files = basePath.toFile.listFiles.toList collect { case x if x.isFile => x.toPath }
+    val files = basePath.toFile.listFiles.toList collect { case x if x.isFile && x.getName.contains("cromwell_restart") => x.toPath }
     val testCases = files.traverse[ErrorOr, CentaurTestCase](CentaurTestCase.fromPath)
 
     testCases match {

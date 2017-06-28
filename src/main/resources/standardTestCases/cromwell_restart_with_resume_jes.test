@@ -9,7 +9,6 @@ files {
 metadata {
   workflowName: cromwell_restart
   status: Succeeded
-  "calls.cromwell_restart.first_task.executionStatus": Done
   "calls.cromwell_restart.cromwell_killer.executionStatus": Done
-  "calls.cromwell_restart.third_task.executionStatus": Done
 }
+
