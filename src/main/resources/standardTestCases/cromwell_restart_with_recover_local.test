@@ -1,5 +1,5 @@
-name: cromwell_restart_with_resume_local
-testFormat: CromwellRestartWithResume
+name: cromwell_restart_with_recover_local
+testFormat: CromwellRestartWithRecover
 backendsMode: "only"
 backends: [Local, LocalNoDocker]
 tags: [localdockertest]

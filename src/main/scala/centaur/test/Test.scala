@@ -99,7 +99,7 @@ object Operations {
   /**
     * Validate that the given jobId matches the one in the metadata
     */
-  def validateResumed(workflow: SubmittedWorkflow, callFqn: String, formerJobId: String): Test[Unit] = {
+  def validateRecovered(workflow: SubmittedWorkflow, callFqn: String, formerJobId: String): Test[Unit] = {
     new Test[Unit] {
       def doPerform(): Unit = {
         CentaurCromwellClient.metadata(workflow) match {

@@ -1,5 +1,5 @@
-name: cromwell_restart_with_resume_jes
-testFormat: CromwellRestartWithResume
+name: cromwell_restart_with_recover_jes
+testFormat: CromwellRestartWithRecover
 backends: [Jes]
 
 files {

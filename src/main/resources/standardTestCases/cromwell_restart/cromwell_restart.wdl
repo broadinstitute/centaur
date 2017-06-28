@@ -12,6 +12,9 @@ task first_task {
     }
 }
 
+#######################################################################################
+#   This task will trigger a cromwell restart when it switches to "Running" state !   #
+#######################################################################################
 task cromwell_killer {
     File inp
     command {

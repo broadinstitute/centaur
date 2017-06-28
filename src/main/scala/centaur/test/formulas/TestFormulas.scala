@@ -66,7 +66,7 @@ object TestFormulas {
     } yield ()
   }
   
-  private def cromwellRestart(workflowDefinition: Workflow, testResume: Boolean): Test[Unit] = CentaurConfig.runMode match {
+  private def cromwellRestart(workflowDefinition: Workflow, testRecover: Boolean): Test[Unit] = CentaurConfig.runMode match {
     case ManagedCromwellServer(_, postRestart, withRestart) if withRestart =>
       for {
         w <- submitWorkflow(workflowDefinition)
@@ -75,12 +75,12 @@ object TestFormulas {
         _ = CromwellManager.startCromwell(postRestart)
         _ <- pollUntilStatus(w, Succeeded)
         _ <- validateMetadata(w, workflowDefinition)
-        _ <- if(testResume) validateResumed(w, "cromwell_restart.cromwell_killer", jobId) else Test.successful(())
+        _ <- if(testRecover) validateRecovered(w, "cromwell_restart.cromwell_killer", jobId) else Test.successful(())
         _ <- validateDirectoryContentsCounts(workflowDefinition, w)
       } yield ()
     case _ => runSuccessfulWorkflowAndVerifyMetadata(workflowDefinition)
   }
   
-  def cromwellRestartWithResume(workflowDefinition: Workflow): Test[Unit] = cromwellRestart(workflowDefinition, testResume = true)
-  def cromwellRestartWithoutResume(workflowDefinition: Workflow): Test[Unit] = cromwellRestart(workflowDefinition, testResume = false)
+  def cromwellRestartWithRecover(workflowDefinition: Workflow): Test[Unit] = cromwellRestart(workflowDefinition, testRecover = true)
+  def cromwellRestartWithoutRecover(workflowDefinition: Workflow): Test[Unit] = cromwellRestart(workflowDefinition, testRecover = false)
 }

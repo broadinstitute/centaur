@@ -1,5 +1,5 @@
-name: cromwell_restart_without_resume
-testFormat: CromwellRestartWithoutResume
+name: cromwell_restart_without_recover
+testFormat: CromwellRestartWithoutRecover
 backends: [TES]
 tags: [localdockertest]
 
