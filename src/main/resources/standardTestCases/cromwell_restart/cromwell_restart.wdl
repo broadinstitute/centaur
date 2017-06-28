@@ -3,7 +3,7 @@ task cromwell_killer {
         # runs long enough to give time to Centaur to see that it's Running and shutdown Cromwell
         sleep 60
         echo "Arrrrgggggggg !" > out
-        chmod go+r out
+        chmod go+w out
     }
     output {
         File out = "out"
