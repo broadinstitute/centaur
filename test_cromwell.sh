@@ -141,7 +141,7 @@ if [[ -n ${EXCLUDE_TAG[*]} ]]; then
     TEST_COMMAND="java ${REFRESH_TOKEN} ${RUN_SPECIFIED_TEST_DIR_CMD} ${CENTAUR_CONF} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT} "$EXCLUDE
 else
     echo "Running Centaur with sbt test"
-    TEST_COMMAND="java ${REFRESH_TOKEN} ${RUN_SPECIFIED_TEST_DIR_CMD} ${CENTAUR_CONF}  -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT}"
+    TEST_COMMAND="java ${REFRESH_TOKEN} ${RUN_SPECIFIED_TEST_DIR_CMD} ${CENTAUR_CONF} -cp $CP org.scalatest.tools.Runner -R target/scala-2.12/test-classes -oD -PS${TEST_THREAD_COUNT}"
 fi
 
 eval "${TEST_COMMAND} >> ${CENTAUR_LOG} 2>&1"
