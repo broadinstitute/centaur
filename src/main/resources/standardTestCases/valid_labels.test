@@ -17,5 +17,4 @@ metadata {
   "labels.only-key": ""
   "labels.fc-id": "0123-abcd-4567-efgh"
   "labels.cromwell-workflow-id": "cromwell-<<UUID>>"
-  "labels.cromwell-workflow-name": "wf_hello"
 }
