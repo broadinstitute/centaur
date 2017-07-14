@@ -1,0 +1,17 @@
+name: declaration_override_caching
+testFormat: workflowsuccess
+
+files {
+  wdl: declaration_override_caching/declaration_override_caching.wdl
+}
+
+metadata {
+  workflowName: declaration_override_caching
+  status: Succeeded
+  "calls.declaration_override_caching.taskdecl.callCaching.result": "Cache Miss"
+  "calls.declaration_override_caching.taskdecl_mismatched.callCaching.result": "Cache Miss"
+  "calls.declaration_override_caching.taskdecl_matched.callCaching.result": "Cache Hit: <<UUID>>:declaration_override_caching.taskdecl:-1"
+  "calls.declaration_override_caching.taskdecl_optional.callCaching.result": "Cache Miss"
+  "calls.declaration_override_caching.taskdecl_optional_mismatched.callCaching.result": "Cache Miss"
+  "calls.declaration_override_caching.taskdecl_optional_matched.callCaching.result": "Cache Hit: <<UUID>>:declaration_override_caching.taskdecl_optional:-1"
+}
