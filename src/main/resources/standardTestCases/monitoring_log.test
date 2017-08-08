@@ -6,7 +6,7 @@ backends: [Jes]
 
 files {
   wdl: monitoring_log/monitoring_log.wdl
-  inputs: monitoring_log/monitoring_log.options
+  options: monitoring_log/monitoring_log.options
 }
 
 metadata {
