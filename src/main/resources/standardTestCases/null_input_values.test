@@ -22,4 +22,6 @@ metadata {
   "outputs.null_input_values.o7.two": null
   "outputs.null_input_values.o7.three": 3
   "outputs.null_input_values.o8": null
+  "outputs.null_input_values.o9.left": null
+  "outputs.null_input_values.o9.right": null
 }

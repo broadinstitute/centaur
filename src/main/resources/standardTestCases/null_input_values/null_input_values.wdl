@@ -7,6 +7,7 @@ workflow null_input_values {
     Array[Int]? maybeArrayOfInts
     Map[String, Int?] mapOfStringToMaybeInt
     Map[String, Int]? maybeMapOfStringToInt
+    Pair[Int?, String?] pairOfMaybeIntMaybeString
     
     output {
         String? o1 = maybeString
@@ -17,5 +18,6 @@ workflow null_input_values {
         Array[Int]? o6 = maybeArrayOfInts
         Map[String, Int?] o7 = mapOfStringToMaybeInt
         Map[String, Int]? o8 = maybeMapOfStringToInt
+        Pair[Int?, String?] o9 = pairOfMaybeIntMaybeString
     }
 }
