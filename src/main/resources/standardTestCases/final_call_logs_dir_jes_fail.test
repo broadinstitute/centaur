@@ -1,0 +1,19 @@
+# Tests that a runtime option to save call logs is copying said logs appropriately.
+
+name: final_call_logs_dir_jes_fail
+backends: [Jes]
+
+testFormat: workflowfailure
+
+files {
+  wdl: final_call_logs_dir/final_call_logs_dir_fail.wdl
+  options: final_call_logs_dir/final_call_logs_dir_jes.options
+}
+
+fileSystemCheck: "gcs"
+outputExpectations {
+  "gs://cloud-cromwell-dev/callLogs/final_call_logs_dir_fail/<<UUID>>/call-hello/hello-stdout.log": 1
+  "gs://cloud-cromwell-dev/callLogs/final_call_logs_dir_fail/<<UUID>>/call-hello/hello-stderr.log": 1
+  "gs://cloud-cromwell-dev/callLogs/final_call_logs_dir_fail/<<UUID>>/call-hello/hello.log": 1
+  "gs://cloud-cromwell-dev/workflowLogDir/workflow.<<UUID>>.log": 1
+}
