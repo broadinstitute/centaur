@@ -1,4 +1,3 @@
-ignore: false
 name: tmp_dir
 testFormat: workflowsuccess
 

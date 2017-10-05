@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: ifs_upstream_and_downstream
 testFormat: workflowsuccess
 tags: [ conditionals ]

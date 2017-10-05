@@ -1,4 +1,3 @@
-ignore: false
 name: valid_labels
 testFormat: workflowsuccess
 tags: [ labels ]

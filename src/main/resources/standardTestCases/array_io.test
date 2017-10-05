@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: array_io
 testFormat: workflowsuccess
 

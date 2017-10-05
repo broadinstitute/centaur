@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: fofn_caching
 testFormat: runtwiceexpectingcallcaching
 backends: [Jes-Caching-No-Copy]

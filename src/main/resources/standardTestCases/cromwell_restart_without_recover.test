@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: cromwell_restart_without_recover
 testFormat: CromwellRestartWithoutRecover
 backends: [TES]

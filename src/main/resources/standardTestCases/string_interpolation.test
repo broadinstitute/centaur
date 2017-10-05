@@ -1,4 +1,3 @@
-ignore: false
 name: string_interpolation
 testFormat: workflowsuccess
 

@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: lots_of_nesting
 testFormat: workflowsuccess
 tags: [ conditionals ]

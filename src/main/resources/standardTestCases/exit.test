@@ -1,4 +1,3 @@
-ignore: false
 name: exit
 testFormat: workflowsuccess
 

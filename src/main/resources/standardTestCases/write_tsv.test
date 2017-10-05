@@ -1,4 +1,3 @@
-ignore: false
 name: write_tsv
 testFormat: workflowsuccess
 

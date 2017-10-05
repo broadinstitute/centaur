@@ -1,4 +1,3 @@
-ignore: false
 name: subdirectory
 testFormat: workflowsuccess
 

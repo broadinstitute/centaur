@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 # This test exercises shortcomings in where WDL functions are accepted which has never worked in any version of Cromwell
 # to date, but probably should.
 

@@ -1,4 +1,3 @@
-ignore: false
 name: symlink_localization
 testFormat: workflowsuccess
 backends: [Local]

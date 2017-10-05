@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: cromwell_restart_with_recover_jes
 testFormat: CromwellRestartWithRecover
 backends: [Jes]

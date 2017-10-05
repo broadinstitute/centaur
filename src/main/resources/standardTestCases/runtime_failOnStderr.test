@@ -1,4 +1,3 @@
-ignore: false
 name: runtime_failOnStderr
 testFormat: workflowfailure
 

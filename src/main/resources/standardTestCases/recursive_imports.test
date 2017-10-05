@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: recursive_imports
 testFormat: workflowsuccess
 

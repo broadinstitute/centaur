@@ -1,4 +1,3 @@
-ignore: false
 name: output_filename_interpolation
 testFormat: workflowsuccess
 

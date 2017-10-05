@@ -1,4 +1,4 @@
-ignore: false
+ignore: true
 name: call_cache_capoeira_local
 testFormat: workflowsuccess
 backends: [Local]
