@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: multiline_command_line
 testFormat: workflowsuccess
 

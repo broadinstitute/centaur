@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: ifs_in_scatters
 testFormat: workflowsuccess
 tags: [ conditionals ]

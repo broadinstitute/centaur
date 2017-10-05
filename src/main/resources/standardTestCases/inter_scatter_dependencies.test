@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: inter_scatter_dependencies
 testFormat: workflowsuccess
 

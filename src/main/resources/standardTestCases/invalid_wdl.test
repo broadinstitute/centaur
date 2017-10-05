@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: invalid_wdl
 testFormat: workflowfailure
 

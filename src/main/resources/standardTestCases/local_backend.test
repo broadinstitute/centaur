@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 # Test against a different functional backend in the future
 
 name: local_backend

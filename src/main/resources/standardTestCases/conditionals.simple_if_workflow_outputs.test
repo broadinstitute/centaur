@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: simple_if_workflow_outputs
 testFormat: workflowsuccess
 tags: [ conditionals ]

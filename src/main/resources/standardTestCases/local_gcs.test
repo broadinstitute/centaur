@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: local_gcs
 testFormat: workflowsuccess
 backends: [Jes, Local]

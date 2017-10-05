@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: backendWithNoDocker
 backends: [LocalNoDocker]
 testFormat: runtwiceexpectingcallcaching

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: custom_mount_point
 testFormat: workflowsuccess
 backends: [Jes]

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 #Currently failing since the workflow fails without completing task 'shouldSucceed'
 #and no information about tasks that weren't started.
 

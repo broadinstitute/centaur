@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: complex_types_files
 testFormat: workflowsuccess
 

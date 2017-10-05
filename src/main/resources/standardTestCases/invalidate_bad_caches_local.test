@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: invalidate_bad_caches_local
 testFormat: workflowsuccess
 backends: [Local]

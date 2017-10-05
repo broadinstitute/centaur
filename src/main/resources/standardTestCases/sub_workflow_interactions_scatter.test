@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: sub_workflow_interactions_scatter
 testFormat: workflowsuccess
 

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: array_and_map_indexing
 testFormat: workflowsuccess
 

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: empty_string
 testFormat: workflowsuccess
 

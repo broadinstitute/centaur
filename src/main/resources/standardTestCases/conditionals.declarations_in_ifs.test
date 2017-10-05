@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: declarations_in_ifs
 testFormat: workflowsuccess
 tags: [ conditionals ]

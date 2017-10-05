@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: composedenginefunctions
 testFormat: workflowsuccess
 

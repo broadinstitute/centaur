@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: input_mirror
 testFormat: workflowsuccess
 

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: workflow_type_and_version_cwl
 testFormat: workflowsuccess
 

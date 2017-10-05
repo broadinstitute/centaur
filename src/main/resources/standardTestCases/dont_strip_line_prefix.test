@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: dont_strip_line_prefix
 testFormat: workflowsuccess
 

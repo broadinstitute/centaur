@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 
 name: optional_declarations
 testFormat: workflowsuccess

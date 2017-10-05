@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: declarations_as_nodes
 testFormat: workflowsuccess
 

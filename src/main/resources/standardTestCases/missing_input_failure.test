@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: missing_input_failure
 testFormat: workflowfailure
 backends: [Jes]

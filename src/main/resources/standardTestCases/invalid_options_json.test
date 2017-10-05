@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: invalid_options_json
 testFormat: submitfailure
 

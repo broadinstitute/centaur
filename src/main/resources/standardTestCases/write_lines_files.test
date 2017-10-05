@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: write_lines_files
 testFormat: workflowsuccess
 

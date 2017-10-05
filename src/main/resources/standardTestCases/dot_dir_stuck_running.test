@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: dot_dir_stuck_running
 testFormat: workflowsuccess
 

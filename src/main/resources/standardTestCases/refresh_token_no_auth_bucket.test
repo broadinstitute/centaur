@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: refresh_token_no_auth_bucket
 testFormat: workflowfailure
 backends: [Jes-Refresh]

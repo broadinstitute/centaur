@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: workflow_name_length
 testFormat: workflowfailure
 tags: [localdockertest]

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: refresh_token
 testFormat: workflowsuccess
 backends: [Jes-Refresh]

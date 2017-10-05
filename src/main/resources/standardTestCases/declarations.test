@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 # Tests a variety of schemes for specifying a declaration and makes sure that they all work correctly
 
 name: declarations

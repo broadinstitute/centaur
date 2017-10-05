@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: failing_continue_on_return_code
 testFormat: workflowfailure
 

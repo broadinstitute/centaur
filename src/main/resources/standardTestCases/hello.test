@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: hello
 testFormat: workflowsuccess
 

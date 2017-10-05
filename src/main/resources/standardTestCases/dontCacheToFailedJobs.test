@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: dont_cache_to_failed_jobs
 testFormat: runfailingtwiceexpectingnocallcaching
 

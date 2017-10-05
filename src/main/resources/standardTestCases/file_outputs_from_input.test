@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: test_file_outputs_from_input
 testFormat: workflowsuccess
 

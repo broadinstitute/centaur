@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: invalid_runtime_attributes
 testFormat: workflowfailure
 

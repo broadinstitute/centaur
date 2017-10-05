@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: invalidate_bad_caches_jes_no_copy
 testFormat: workflowsuccess
 backends: [Jes-Caching-No-Copy]

@@ -1,4 +1,4 @@
-ignore: true
+ignore: false
 name: lots_of_inputs
 testFormat: workflowsuccess
 tags: [ big_metadata ]
