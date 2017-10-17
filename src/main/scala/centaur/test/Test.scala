@@ -232,7 +232,7 @@ object Operations {
         }
       }
 
-      override def run: Try[Unit] = {
+      override def run: Try[Unit] = if (jobId.startsWith("operations/")) {
         // The PAPI status should be aborted immediately
         // Note: this doesn't work as of now because Cromwell considers the workflow aborted
         // as soon as it has requested cancellation, not when PAPI says its cancelled
@@ -241,7 +241,7 @@ object Operations {
         eventually(OffsetDateTime.now(), 1.minute) {
           Try(checkVMTerminated())
         }
-      }
+      } else Success(())
     }
   }
 
@@ -323,6 +323,7 @@ object Operations {
         for {
           actualMetadata <- CentaurCromwellClient.metadata(workflow)
           _ = if (workflowSpec.notInMetadata.nonEmpty) {
+            // Check that none of the "notInMetadata" keys are in the actual metadata
             val absentMdDif = workflowSpec.notInMetadata.toSet.diff(actualMetadata.value.keySet)
             if (absentMdDif.isEmpty) throw new Exception(s"Found unwanted keys in metadata: ${absentMdDif.mkString(", ")}")
           }

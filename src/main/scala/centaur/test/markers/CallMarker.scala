@@ -20,5 +20,3 @@ object CallMarker {
   * Test formulas need to explicitly handle those markers in order for them to be honored
   */
 case class CallMarker(callKey: String)
-
-trait AbortMarker { self: CallMarker => }

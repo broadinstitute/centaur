@@ -29,7 +29,7 @@ object CromwellManager {
   // Check that we have a cromwellProcess, that this process is alive, and that cromwell is ready to accept requests 
   private def isAlive = cromwellProcess.exists(_.isAlive()) && CentaurCromwellClient.isAlive
 
-  def startCromwell(cromwell: CromwellConfiguration): Unit = this.synchronized {
+  def startCromwell(cromwell: CromwellConfiguration): Unit = {
     _isManaged = true
     
     if (!isAlive) {
@@ -63,7 +63,7 @@ object CromwellManager {
     }
   }
 
-  def stopCromwell() = this.synchronized {
+  def stopCromwell() = {
     _ready = false
     println("Stopping Cromwell...")
     cromwellProcess foreach { process =>
