@@ -1,4 +1,3 @@
-ignore: true
 name: abort.instant_abort
 testFormat: instantabort
 
