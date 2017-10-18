@@ -24,7 +24,7 @@ case class CentaurTestCase(workflow: Workflow,
     case RunTwiceExpectingCallCachingTest => TestFormulas.runWorkflowTwiceExpectingCaching(workflow)
     case RunTwiceExpectingNoCallCachingTest => TestFormulas.runWorkflowTwiceExpectingNoCaching(workflow)
     case RunFailingTwiceExpectingNoCallCachingTest => TestFormulas.runFailingWorkflowTwiceExpectingNoCaching(workflow)
-    case SubmitFailureTest => TestFormulas.instantAbort(workflow)
+    case SubmitFailureTest => TestFormulas.submitInvalidWorkflow(workflow, submitResponseOption.get)
     case InstantAbort => TestFormulas.instantAbort(workflow)
     case CromwellRestartWithRecover(callMarker)=> TestFormulas.cromwellRestartWithRecover(workflow, callMarker)
     case CromwellRestartWithoutRecover(callMarker) => TestFormulas.cromwellRestartWithoutRecover(workflow, callMarker)
