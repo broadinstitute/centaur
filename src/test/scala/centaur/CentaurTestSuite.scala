@@ -3,6 +3,8 @@ package centaur
 import centaur.api.CentaurCromwellClient
 import org.scalatest.{BeforeAndAfterAll, ParallelTestExecution, Suites}
 
+import scala.sys.ShutdownHookThread
+
 object CentaurTestSuite {
   // Start cromwell if we're in Managed mode
   // Note: we can't use beforeAll to start Cromwell, because beforeAll is executed once the suite is instantiated and the
@@ -21,10 +23,14 @@ object CentaurTestSuite {
   * The main centaur test suites, runs sub suites in parallel, but allows better control over the way each nested suite runs.
   */
 class CentaurTestSuite extends Suites(new RestartTestCaseSpec(), new StandardTestCaseSpec()) with ParallelTestExecution with BeforeAndAfterAll {
+  private var shutdownHook: Option[ShutdownHookThread] = _
 
   override def beforeAll() = {
-    sys.addShutdownHook { CromwellManager.stopCromwell() }
+    shutdownHook = Option(sys.addShutdownHook { CromwellManager.stopCromwell() })
   }
 
-  override def afterAll() = CromwellManager.stopCromwell()
+  override def afterAll() = {
+    CromwellManager.stopCromwell()
+    shutdownHook.foreach(_.remove())
+  }
 }

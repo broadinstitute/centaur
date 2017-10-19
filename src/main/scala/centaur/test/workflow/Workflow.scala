@@ -39,7 +39,7 @@ object Workflow {
       case Failure(_) => invalidNel(s"Invalid test config: $path")
     }
   }
-  
+
   def fromConfig(conf: Config, configPath: Path): ErrorOr[Workflow] = {
     conf.get[String]("name") match {
       case Result.Success(n) =>
