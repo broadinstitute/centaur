@@ -328,7 +328,7 @@ object Operations {
 
         for {
           actualMetadata <- CentaurCromwellClient.metadata(workflow)
-          _ = validateUnwantedMetadata
+          _ = validateUnwantedMetadata(actualMetadata)
           diffs = expectedMetadata.diff(actualMetadata, workflow.id.id, cacheHitUUID)
           _ = checkDiff(diffs)
         } yield actualMetadata
