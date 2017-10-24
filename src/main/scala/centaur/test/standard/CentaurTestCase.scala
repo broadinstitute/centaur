@@ -7,7 +7,7 @@ import cats.implicits._
 import centaur.test._
 import centaur.test.formulas.TestFormulas
 import centaur.test.standard.CentaurTestFormat._
-import centaur.test.submit.SubmitResponse
+import centaur.test.submit.{SubmitResponse, SubmitHttpResponse}
 import centaur.test.workflow.{AllBackendsRequired, AnyBackendRequired, OnlyBackendsAllowed, Workflow}
 import com.typesafe.config.{Config, ConfigFactory}
 import lenthall.validation.ErrorOr.ErrorOr
@@ -17,8 +17,8 @@ import scala.util.{Failure, Success, Try}
 case class CentaurTestCase(workflow: Workflow,
                            testFormat: CentaurTestFormat,
                            testOptions: TestOptions,
-                           submitResponseOption: Option[SubmitResponse]) {
-  def testFunction: Test[Unit] = this.testFormat match {
+                           submitResponseOption: Option[SubmitHttpResponse]) {
+  def testFunction: Test[SubmitResponse] = this.testFormat match {
     case WorkflowSuccessTest => TestFormulas.runSuccessfulWorkflowAndVerifyMetadata(workflow)
     case WorkflowFailureTest => TestFormulas.runFailingWorkflowAndVerifyMetadata(workflow)
     case RunTwiceExpectingCallCachingTest => TestFormulas.runWorkflowTwiceExpectingCaching(workflow)
@@ -60,7 +60,7 @@ object CentaurTestCase {
     val workflow = Workflow.fromConfig(conf, configPath)
     val format = CentaurTestFormat.fromConfig(conf).toValidated
     val options = TestOptions.fromConfig(conf)
-    val submit = SubmitResponse.fromConfig(conf)
+    val submit = SubmitHttpResponse.fromConfig(conf)
     workflow |@| format |@| options |@| submit map {
       CentaurTestCase(_, _, _, _)
     }
@@ -73,7 +73,8 @@ object CentaurTestCase {
     }
   }
 
-  private def validateSubmitFailure(workflow: Workflow, submitResponseOption: Option[SubmitResponse]): ErrorOr[Unit] = {
+  private def validateSubmitFailure(workflow: Workflow,
+                                    submitResponseOption: Option[SubmitHttpResponse]): ErrorOr[Unit] = {
     submitResponseOption match {
       case None => invalidNel("No submit stanza included in test config")
       case Some(_) => Valid(())

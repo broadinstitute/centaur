@@ -1,5 +1,6 @@
 name := "centaur"
 
+// TODO: Write version to a config? Sync with CentaurCwlRunner.
 version := "1.0"
 
 scalaVersion := "2.12.3"
@@ -35,6 +36,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpV,
   "com.github.pathikrit" %% "better-files" % betterFilesV,
   "org.broadinstitute" %% "cromwell-api-client" % cromwellV,
+  "com.github.scopt" %% "scopt" % "3.6.0",
   //---------- Test libraries -------------------//
   "org.scalatest" %% "scalatest" % "3.0.3" % Test,
   "org.pegdown" % "pegdown" % "1.6.0" % Test,
@@ -59,3 +61,14 @@ dependencyOverrides ++= Set(
 )
 
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDSI", "-h", "target/test-reports")
+
+// TODO: Move centaur-cwl-runner into a sub-project
+assemblyJarName in assembly := "centaur-cwl-runner-" + version.value + ".jar"
+mainClass in assembly := Some("centaur.test.CentaurCwlRunner")
+test in assembly := {}
+assemblyMergeStrategy in assembly := {
+  case "project.properties" => MergeStrategy.discard
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}

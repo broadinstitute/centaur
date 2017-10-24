@@ -1,7 +1,8 @@
 package centaur.api
 
 import java.io.IOException
-import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.{Executors, ThreadFactory}
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -11,10 +12,10 @@ import centaur.test.metadata.WorkflowMetadata
 import centaur.test.workflow.Workflow
 import centaur.{CentaurConfig, CromwellManager}
 import cromwell.api.CromwellClient
-import cromwell.api.model.{CromwellBackends, SubmittedWorkflow, WorkflowStatus}
+import cromwell.api.model.{CromwellBackends, SubmittedWorkflow, WorkflowOutputs, WorkflowStatus}
 
 import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.{Await, ExecutionContext, Future, TimeoutException}
+import scala.concurrent._
 import scala.language.postfixOps
 import scala.util.Try
 
@@ -22,7 +23,29 @@ object CentaurCromwellClient {
   // Do not use scala.concurrent.ExecutionContext.Implicits.global as long as this is using Await.result
   // See https://github.com/akka/akka-http/issues/602
   // And https://github.com/viktorklang/blog/blob/master/Futures-in-Scala-2.12-part-7.md
-  final implicit val blockingEc = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  final implicit val blockingEc: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+    Executors.newCachedThreadPool(DaemonizedDefaultThreadFactory))
+
+  /**
+    * A static version of java.util.concurrent.Executors.DefaultThreadFactory that creates daemon threads that exit when
+    * the application exits.
+    *
+    * java.util.concurrent.Executors.DefaultThreadFactory
+    * http://dev.bizo.com/2014/06/cached-thread-pool-considered-harmlful.html
+    */
+  object DaemonizedDefaultThreadFactory extends ThreadFactory {
+    private val s = System.getSecurityManager
+    private val group = if (s != null) s.getThreadGroup else Thread.currentThread.getThreadGroup
+    private val threadNumber = new AtomicInteger(1)
+    private val namePrefix = "daemonpool-thread-"
+
+    override def newThread(r: Runnable): Thread = {
+      val t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement, 0)
+      if (!t.isDaemon) t.setDaemon(true)
+      if (t.getPriority != Thread.NORM_PRIORITY) t.setPriority(Thread.NORM_PRIORITY)
+      t
+    }
+  }
 
   // Akka HTTP needs both the actor system and a materializer
   final implicit val system = ActorSystem("centaur-acting-like-a-system")
