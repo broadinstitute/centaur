@@ -1,0 +1,12 @@
+name: joint_discovery
+testFormat: workflowsuccess
+
+files {
+  wdl: gatk-workflows/joint-discovery/joint_discovery_gatk4.wdl
+  inputs: gatk-workflows/joint-discovery/joint_discovery_gatk4.inputs
+}
+
+metadata {
+  workflowName: JointDiscovery_GATK4
+  status: Succeeded
+}
