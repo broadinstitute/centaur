@@ -1,0 +1,11 @@
+{
+  "CNVSomaticPanelWorkflow.do_explicit_gc_correction": "true",
+  "CNVSomaticPanelWorkflow.gatk_docker": "broadinstitute/gatk:4.beta.6",
+  "CNVSomaticPanelWorkflow.intervals": "gs://gatk-test-data/cnv/somatic/ice_targets_sample-chr20.interval_list",
+  "CNVSomaticPanelWorkflow.normal_bams_list": "gs://gatk-test-data/cnv/somatic/cnv_somatic_panel_wes_input.tsv",
+  "CNVSomaticPanelWorkflow.pon_entity_id": "wes-do-gc",
+  "CNVSomaticPanelWorkflow.ref_fasta_dict": "gs://gatk-test-data/cnv/somatic/cnv_somatic_panel_wes_input.tsv
+  "CNVSomaticPanelWorkflow.ref_fasta_fai": "gs://gatk-test-data/cnv/somatic/human_g1k_v37.chr-20.truncated.fasta.fai",
+  "CNVSomaticPanelWorkflow.ref_fasta": "gs://gatk-test-data/cnv/somatic/human_g1k_v37.chr-20.truncated.fasta",
+  "CNVSomaticPanelWorkflow.gatk4_jar_override": "gs://gatk-test-data/cnv/somatic/gatk-package-4.beta.6-91-g632bac7-SNAPSHOT-local.jar"
+}
