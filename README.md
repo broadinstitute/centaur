@@ -1,3 +1,9 @@
+# The Centaur repository is now under the Cromwell repository. [Click here for Centaur within Cromwell](https://github.com/broadinstitute/cromwell/tree/develop/centaur). 
+## For information about how to use Centaur, see the [Cromwell documentation](http://cromwell.readthedocs.io/en/develop/Centaur/).
+
+------
+------
+
 # Introduction
 Centaur is an integration testing suite for the [Cromwell](http://github.com/broadinstitute/cromwell) execution server.  It's purpose is to exercise the functionality of a specific deployment of Cromwell, to ensure that it is functioning properly 'in the wild'.  
 
